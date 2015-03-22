@@ -1,0 +1,179 @@
+<?xml version="1.0" encoding="ascii"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+          "DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <title>papyros.dummy</title>
+  <link rel="stylesheet" href="epydoc.css" type="text/css" />
+  <script type="text/javascript" src="epydoc.js"></script>
+</head>
+
+<body bgcolor="white" text="black" link="blue" vlink="#204080"
+      alink="#204080">
+<!-- ==================== NAVIGATION BAR ==================== -->
+<table class="navbar" border="0" width="100%" cellpadding="0"
+       bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="middle">
+
+  <!-- Tree link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="module-tree.html">Trees</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Index link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="identifier-index.html">Indices</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Help link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="help.html">Help</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Project homepage -->
+      <th class="navbar" align="right" width="100%">
+        <table border="0" cellpadding="0" cellspacing="0">
+          <tr><th class="navbar" align="center"
+            >papyros documentation</th>
+          </tr></table></th>
+  </tr>
+</table>
+<table width="100%" cellpadding="0" cellspacing="0">
+  <tr valign="top">
+    <td width="100%">
+      <span class="breadcrumbs">
+        <a href="papyros-module.html">Package&nbsp;papyros</a> ::
+        Module&nbsp;dummy
+      </span>
+    </td>
+    <td>
+      <table cellpadding="0" cellspacing="0">
+        <!-- hide/show private -->
+        <tr><td align="right"><span class="options">[<a href="javascript:void(0);" class="privatelink"
+    onclick="toggle_private();">hide&nbsp;private</a>]</span></td></tr>
+        <tr><td align="right"><span class="options"
+            >[<a href="frames.html" target="_top">frames</a
+            >]&nbsp;|&nbsp;<a href="papyros.dummy-pysrc.html"
+            target="_top">no&nbsp;frames</a>]</span></td></tr>
+      </table>
+    </td>
+  </tr>
+</table>
+<h1 class="epydoc">Source Code for <a href="papyros.dummy-module.html">Module papyros.dummy</a></h1>
+<pre class="py-src">
+<a name="L1"></a><tt class="py-lineno"> 1</tt>  <tt class="py-line"><tt class="py-docstring">'''A non-concurrent implementation of the papyros API.</tt> </tt>
+<a name="L2"></a><tt class="py-lineno"> 2</tt>  <tt class="py-line"><tt class="py-docstring"></tt> </tt>
+<a name="L3"></a><tt class="py-lineno"> 3</tt>  <tt class="py-line"><tt class="py-docstring">Basically for sake of completeness and as a fallback, not really useful.</tt> </tt>
+<a name="L4"></a><tt class="py-lineno"> 4</tt>  <tt class="py-line"><tt class="py-docstring">'''</tt> </tt>
+<a name="L5"></a><tt class="py-lineno"> 5</tt>  <tt class="py-line"> </tt>
+<a name="L6"></a><tt class="py-lineno"> 6</tt>  <tt class="py-line"><tt class="py-name">__all__</tt> <tt class="py-op">=</tt> <tt class="py-op">[</tt><tt class="py-string">'DummyTaskDispatcher'</tt><tt class="py-op">]</tt> </tt>
+<a name="L7"></a><tt class="py-lineno"> 7</tt>  <tt class="py-line"> </tt>
+<a name="L8"></a><tt class="py-lineno"> 8</tt>  <tt class="py-line"><tt class="py-keyword">from</tt> <tt id="link-0" class="py-name" targets="Package papyros=papyros-module.html"><a title="papyros" class="py-name" href="#" onclick="return doclink('link-0', 'papyros', 'link-0');">papyros</a></tt><tt class="py-op">.</tt><tt id="link-1" class="py-name" targets="Module papyros.base=papyros.base-module.html"><a title="papyros.base" class="py-name" href="#" onclick="return doclink('link-1', 'base', 'link-1');">base</a></tt> <tt class="py-keyword">import</tt> <tt id="link-2" class="py-name" targets="Class papyros.base.TaskDispatcher=papyros.base.TaskDispatcher-class.html"><a title="papyros.base.TaskDispatcher" class="py-name" href="#" onclick="return doclink('link-2', 'TaskDispatcher', 'link-2');">TaskDispatcher</a></tt><tt class="py-op">,</tt> <tt id="link-3" class="py-name" targets="Class papyros.base.Worker=papyros.base.Worker-class.html"><a title="papyros.base.Worker" class="py-name" href="#" onclick="return doclink('link-3', 'Worker', 'link-3');">Worker</a></tt> </tt>
+<a name="L9"></a><tt class="py-lineno"> 9</tt>  <tt class="py-line"> </tt>
+<a name="L10"></a><tt class="py-lineno">10</tt>  <tt class="py-line"> </tt>
+<a name="DummyTaskDispatcher"></a><div id="DummyTaskDispatcher-def"><a name="L11"></a><tt class="py-lineno">11</tt> <a class="py-toggle" href="#" id="DummyTaskDispatcher-toggle" onclick="return toggle('DummyTaskDispatcher');">-</a><tt class="py-line"><tt class="py-keyword">class</tt> <a class="py-def-name" href="papyros.dummy.DummyTaskDispatcher-class.html">DummyTaskDispatcher</a><tt class="py-op">(</tt><tt class="py-base-class">TaskDispatcher</tt><tt class="py-op">,</tt><tt class="py-base-class">Worker</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="DummyTaskDispatcher-collapsed" style="display:none;" pad="++" indent="++++"></div><div id="DummyTaskDispatcher-expanded"><a name="L12"></a><tt class="py-lineno">12</tt>  <tt class="py-line">    <tt class="py-docstring">'''A non-concurrent L{TaskDispatcher} and L{Worker} at the same time.</tt> </tt>
+<a name="L13"></a><tt class="py-lineno">13</tt>  <tt class="py-line"><tt class="py-docstring"></tt> </tt>
+<a name="L14"></a><tt class="py-lineno">14</tt>  <tt class="py-line"><tt class="py-docstring">    It executes tasks as soon as they are pushed to it.</tt> </tt>
+<a name="L15"></a><tt class="py-lineno">15</tt>  <tt class="py-line"><tt class="py-docstring">    '''</tt> </tt>
+<a name="L16"></a><tt class="py-lineno">16</tt>  <tt class="py-line"> </tt>
+<a name="DummyTaskDispatcher.__init__"></a><div id="DummyTaskDispatcher.__init__-def"><a name="L17"></a><tt class="py-lineno">17</tt> <a class="py-toggle" href="#" id="DummyTaskDispatcher.__init__-toggle" onclick="return toggle('DummyTaskDispatcher.__init__');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="papyros.dummy.DummyTaskDispatcher-class.html#__init__">__init__</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">,</tt> <tt class="py-param">size</tt><tt class="py-op">=</tt><tt class="py-number">0</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="DummyTaskDispatcher.__init__-collapsed" style="display:none;" pad="++" indent="++++++++"></div><div id="DummyTaskDispatcher.__init__-expanded"><a name="L18"></a><tt class="py-lineno">18</tt>  <tt class="py-line">        <tt id="link-4" class="py-name"><a title="papyros.base.TaskDispatcher" class="py-name" href="#" onclick="return doclink('link-4', 'TaskDispatcher', 'link-2');">TaskDispatcher</a></tt><tt class="py-op">.</tt><tt id="link-5" class="py-name" targets="Method papyros.base.TaskDispatcher.__init__()=papyros.base.TaskDispatcher-class.html#__init__,Method papyros.base.TaskQueue.__init__()=papyros.base.TaskQueue-class.html#__init__,Method papyros.base.Worker.__init__()=papyros.base.Worker-class.html#__init__,Method papyros.distributed.PyroTaskDispatcher.__init__()=papyros.distributed.PyroTaskDispatcher-class.html#__init__,Method papyros.distributed.PyroTaskQueue.__init__()=papyros.distributed.PyroTaskQueue-class.html#__init__,Method papyros.distributed.PyroWorker.__init__()=papyros.distributed.PyroWorker-class.html#__init__,Method papyros.dummy.DummyTaskDispatcher.__init__()=papyros.dummy.DummyTaskDispatcher-class.html#__init__,Method papyros.execute.CompositeExecutionDecorator.__init__()=papyros.execute.CompositeExecutionDecorator-class.html#__init__,Method papyros.execute.DefaultTaskExecutioner.__init__()=papyros.execute.DefaultTaskExecutioner-class.html#__init__,Method papyros.execute.ExecuteIterator.__init__()=papyros.execute.ExecuteIterator-class.html#__init__,Method papyros.execute.OrderedExecutionDecorator.__init__()=papyros.execute.OrderedExecutionDecorator-class.html#__init__,Method papyros.execute.TaskExecutionDecorator.__init__()=papyros.execute.TaskExecutionDecorator-class.html#__init__,Method papyros.multithreaded.MultiThreadedTaskDispatcher.__init__()=papyros.multithreaded.MultiThreadedTaskDispatcher-class.html#__init__,Method papyros.multithreaded.MultiThreadedWorker.__init__()=papyros.multithreaded.MultiThreadedWorker-class.html#__init__,Method papyros.task.Task.__init__()=papyros.task.Task-class.html#__init__"><a title="papyros.base.TaskDispatcher.__init__
+papyros.base.TaskQueue.__init__
+papyros.base.Worker.__init__
+papyros.distributed.PyroTaskDispatcher.__init__
+papyros.distributed.PyroTaskQueue.__init__
+papyros.distributed.PyroWorker.__init__
+papyros.dummy.DummyTaskDispatcher.__init__
+papyros.execute.CompositeExecutionDecorator.__init__
+papyros.execute.DefaultTaskExecutioner.__init__
+papyros.execute.ExecuteIterator.__init__
+papyros.execute.OrderedExecutionDecorator.__init__
+papyros.execute.TaskExecutionDecorator.__init__
+papyros.multithreaded.MultiThreadedTaskDispatcher.__init__
+papyros.multithreaded.MultiThreadedWorker.__init__
+papyros.task.Task.__init__" class="py-name" href="#" onclick="return doclink('link-5', '__init__', 'link-5');">__init__</a></tt><tt class="py-op">(</tt><tt class="py-name">self</tt><tt class="py-op">,</tt> <tt class="py-name">size</tt><tt class="py-op">)</tt> </tt>
+<a name="L19"></a><tt class="py-lineno">19</tt>  <tt class="py-line">        <tt id="link-6" class="py-name"><a title="papyros.base.Worker" class="py-name" href="#" onclick="return doclink('link-6', 'Worker', 'link-3');">Worker</a></tt><tt class="py-op">.</tt><tt id="link-7" class="py-name"><a title="papyros.base.TaskDispatcher.__init__
+papyros.base.TaskQueue.__init__
+papyros.base.Worker.__init__
+papyros.distributed.PyroTaskDispatcher.__init__
+papyros.distributed.PyroTaskQueue.__init__
+papyros.distributed.PyroWorker.__init__
+papyros.dummy.DummyTaskDispatcher.__init__
+papyros.execute.CompositeExecutionDecorator.__init__
+papyros.execute.DefaultTaskExecutioner.__init__
+papyros.execute.ExecuteIterator.__init__
+papyros.execute.OrderedExecutionDecorator.__init__
+papyros.execute.TaskExecutionDecorator.__init__
+papyros.multithreaded.MultiThreadedTaskDispatcher.__init__
+papyros.multithreaded.MultiThreadedWorker.__init__
+papyros.task.Task.__init__" class="py-name" href="#" onclick="return doclink('link-7', '__init__', 'link-5');">__init__</a></tt><tt class="py-op">(</tt><tt class="py-name">self</tt><tt class="py-op">,</tt> <tt class="py-name">self</tt><tt class="py-op">)</tt> </tt>
+</div><a name="L20"></a><tt class="py-lineno">20</tt>  <tt class="py-line"> </tt>
+<a name="DummyTaskDispatcher._push_task"></a><div id="DummyTaskDispatcher._push_task-def"><a name="L21"></a><tt class="py-lineno">21</tt> <a class="py-toggle" href="#" id="DummyTaskDispatcher._push_task-toggle" onclick="return toggle('DummyTaskDispatcher._push_task');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="papyros.dummy.DummyTaskDispatcher-class.html#_push_task">_push_task</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">,</tt> <tt class="py-param">task</tt><tt class="py-op">,</tt> <tt class="py-param">task_queue</tt><tt class="py-op">,</tt> <tt class="py-param">timeout</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="DummyTaskDispatcher._push_task-collapsed" style="display:none;" pad="++" indent="++++++++"></div><div id="DummyTaskDispatcher._push_task-expanded"><a name="L22"></a><tt class="py-lineno">22</tt>  <tt class="py-line">        <tt class="py-docstring">'''Push the given task from the given task queue to this dispatcher.</tt> </tt>
+<a name="L23"></a><tt class="py-lineno">23</tt>  <tt class="py-line"><tt class="py-docstring"></tt> </tt>
+<a name="L24"></a><tt class="py-lineno">24</tt>  <tt class="py-line"><tt class="py-docstring">        This implementation also executes the task right after pushing it (since</tt> </tt>
+<a name="L25"></a><tt class="py-lineno">25</tt>  <tt class="py-line"><tt class="py-docstring">        it's both L{TaskDispatcher} and L{Worker}).</tt> </tt>
+<a name="L26"></a><tt class="py-lineno">26</tt>  <tt class="py-line"><tt class="py-docstring"></tt> </tt>
+<a name="L27"></a><tt class="py-lineno">27</tt>  <tt class="py-line"><tt class="py-docstring">        @param timeout: It must be None; timeouts can't be enforced for</tt> </tt>
+<a name="L28"></a><tt class="py-lineno">28</tt>  <tt class="py-line"><tt class="py-docstring">            single-threaded workers.</tt> </tt>
+<a name="L29"></a><tt class="py-lineno">29</tt>  <tt class="py-line"><tt class="py-docstring">        @raises ValueError: If C{timeout} is not None.</tt> </tt>
+<a name="L30"></a><tt class="py-lineno">30</tt>  <tt class="py-line"><tt class="py-docstring">        '''</tt> </tt>
+<a name="L31"></a><tt class="py-lineno">31</tt>  <tt class="py-line">        <tt class="py-keyword">if</tt> <tt class="py-name">timeout</tt> <tt class="py-keyword">is</tt> <tt class="py-keyword">not</tt> <tt class="py-name">None</tt><tt class="py-op">:</tt> </tt>
+<a name="L32"></a><tt class="py-lineno">32</tt>  <tt class="py-line">            <tt class="py-keyword">raise</tt> <tt class="py-name">ValueError</tt><tt class="py-op">(</tt><tt class="py-string">'Cannot set timeout when pushing to a dummy dispatcher'</tt><tt class="py-op">)</tt> </tt>
+<a name="L33"></a><tt class="py-lineno">33</tt>  <tt class="py-line">        <tt class="py-comment"># XXX ignore timeout when pushing; this might raise a TimeoutError</tt> </tt>
+<a name="L34"></a><tt class="py-lineno">34</tt>  <tt class="py-line"><tt class="py-comment"></tt>        <tt id="link-8" class="py-name"><a title="papyros.base.TaskDispatcher" class="py-name" href="#" onclick="return doclink('link-8', 'TaskDispatcher', 'link-2');">TaskDispatcher</a></tt><tt class="py-op">.</tt><tt id="link-9" class="py-name" targets="Method papyros.base.TaskDispatcher._push_task()=papyros.base.TaskDispatcher-class.html#_push_task,Method papyros.dummy.DummyTaskDispatcher._push_task()=papyros.dummy.DummyTaskDispatcher-class.html#_push_task"><a title="papyros.base.TaskDispatcher._push_task
+papyros.dummy.DummyTaskDispatcher._push_task" class="py-name" href="#" onclick="return doclink('link-9', '_push_task', 'link-9');">_push_task</a></tt><tt class="py-op">(</tt><tt class="py-name">self</tt><tt class="py-op">,</tt> <tt id="link-10" class="py-name" targets="Module papyros.task=papyros.task-module.html"><a title="papyros.task" class="py-name" href="#" onclick="return doclink('link-10', 'task', 'link-10');">task</a></tt><tt class="py-op">,</tt> <tt class="py-name">task_queue</tt><tt class="py-op">,</tt> <tt class="py-name">timeout</tt><tt class="py-op">=</tt><tt class="py-number">0</tt><tt class="py-op">)</tt> </tt>
+<a name="L35"></a><tt class="py-lineno">35</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt id="link-11" class="py-name" targets="Method papyros.base.Worker.execute_task()=papyros.base.Worker-class.html#execute_task"><a title="papyros.base.Worker.execute_task" class="py-name" href="#" onclick="return doclink('link-11', 'execute_task', 'link-11');">execute_task</a></tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+</div></div><a name="L36"></a><tt class="py-lineno">36</tt>  <tt class="py-line"> </tt><script type="text/javascript">
+<!--
+expandto(location.href);
+// -->
+</script>
+</pre>
+<br />
+<!-- ==================== NAVIGATION BAR ==================== -->
+<table class="navbar" border="0" width="100%" cellpadding="0"
+       bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="middle">
+
+  <!-- Tree link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="module-tree.html">Trees</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Index link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="identifier-index.html">Indices</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Help link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="help.html">Help</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Project homepage -->
+      <th class="navbar" align="right" width="100%">
+        <table border="0" cellpadding="0" cellspacing="0">
+          <tr><th class="navbar" align="center"
+            >papyros documentation</th>
+          </tr></table></th>
+  </tr>
+</table>
+<table border="0" cellpadding="0" cellspacing="0" width="100%%">
+  <tr>
+    <td align="left" class="footer">
+    Generated by Epydoc 3.0beta1 on Tue Aug 12 05:39:45 2008
+    </td>
+    <td align="right" class="footer">
+      <a href="http://epydoc.sourceforge.net">http://epydoc.sourceforge.net</a>
+    </td>
+  </tr>
+</table>
+
+<script type="text/javascript">
+  <!--
+  // Private objects are initially displayed (because if
+  // javascript is turned off then we want them to be
+  // visible); but by default, we want to hide them.  So hide
+  // them unless we have a cookie that says to show them.
+  checkCookie()
+  // -->
+</script>
+  
+</body>
+</html>

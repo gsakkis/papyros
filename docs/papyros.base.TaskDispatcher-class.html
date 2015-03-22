@@ -1,0 +1,637 @@
+<?xml version="1.0" encoding="ascii"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+          "DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <title>papyros.base.TaskDispatcher</title>
+  <link rel="stylesheet" href="epydoc.css" type="text/css" />
+  <script type="text/javascript" src="epydoc.js"></script>
+</head>
+
+<body bgcolor="white" text="black" link="blue" vlink="#204080"
+      alink="#204080">
+<!-- ==================== NAVIGATION BAR ==================== -->
+<table class="navbar" border="0" width="100%" cellpadding="0"
+       bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="middle">
+
+  <!-- Tree link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="module-tree.html">Trees</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Index link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="identifier-index.html">Indices</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Help link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="help.html">Help</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Project homepage -->
+      <th class="navbar" align="right" width="100%">
+        <table border="0" cellpadding="0" cellspacing="0">
+          <tr><th class="navbar" align="center"
+            >papyros documentation</th>
+          </tr></table></th>
+  </tr>
+</table>
+<table width="100%" cellpadding="0" cellspacing="0">
+  <tr valign="top">
+    <td width="100%">
+      <span class="breadcrumbs">
+        <a href="papyros-module.html">Package&nbsp;papyros</a> ::
+        <a href="papyros.base-module.html">Module&nbsp;base</a> ::
+        Class&nbsp;TaskDispatcher
+      </span>
+    </td>
+    <td>
+      <table cellpadding="0" cellspacing="0">
+        <!-- hide/show private -->
+        <tr><td align="right"><span class="options">[<a href="javascript:void(0);" class="privatelink"
+    onclick="toggle_private();">hide&nbsp;private</a>]</span></td></tr>
+        <tr><td align="right"><span class="options"
+            >[<a href="frames.html" target="_top">frames</a
+            >]&nbsp;|&nbsp;<a href="papyros.base.TaskDispatcher-class.html"
+            target="_top">no&nbsp;frames</a>]</span></td></tr>
+      </table>
+    </td>
+  </tr>
+</table>
+<!-- ==================== CLASS DESCRIPTION ==================== -->
+<h1 class="epydoc">Class TaskDispatcher</h1><span class="codelink"><a href="papyros.base-pysrc.html#TaskDispatcher">source&nbsp;code</a></span><br /><br />
+<pre class="base-tree">
+object --+
+         |
+        <strong class="uidshort">TaskDispatcher</strong>
+</pre>
+
+<dl><dt>Known Subclasses:</dt>
+<dd>
+    <a href="papyros.distributed.PyroTaskDispatcher-class.html">distributed.PyroTaskDispatcher</a>,
+    <a href="papyros.multithreaded.MultiThreadedTaskDispatcher-class.html">multithreaded.MultiThreadedTaskDispatcher</a>,
+    <a href="papyros.dummy.DummyTaskDispatcher-class.html">dummy.DummyTaskDispatcher</a>
+</dd></dl>
+
+<hr />
+A <i>TaskDispatcher</i> receives <a 
+  href="papyros.task.Task-class.html" class="link">tasks</a> from a <a 
+  href="papyros.base.TaskQueue-class.html" class="link">TaskQueue</a> and 
+  dispatches them to <a href="papyros.base.Worker-class.html" 
+  class="link">workers</a>.<br /><br />
+
+<!-- ==================== INSTANCE METHODS ==================== -->
+<a name="section-InstanceMethods"></a>
+<table class="summary" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr bgcolor="#70b0f0" class="table-header">
+  <td colspan="2" class="table-header">
+    <table border="0" cellpadding="0" cellspacing="0" width="100%">
+      <tr valign="top">
+        <td align="left"><span class="table-header">Instance Methods</span></td>
+        <td align="right" valign="top"
+         ><span class="options">[<a href="#section-InstanceMethods"
+         class="privatelink" onclick="toggle_private();"
+         >hide private</a>]</span></td>
+      </tr>
+    </table>
+  </td>
+</tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="papyros.base.TaskDispatcher-class.html#__init__" class="summary-sig-name">__init__</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">size</span>=<span class="summary-sig-default">0</span>)</span><br />
+      Initialize this dispatcher.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="papyros.base-pysrc.html#TaskDispatcher.__init__">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="papyros.base.TaskDispatcher-class.html#_assign_task" class="summary-sig-name">_assign_task</a>(<span class="summary-sig-arg">self</span>)</span><br />
+      Pop and return the next unassigned non cancelled task.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="papyros.base-pysrc.html#TaskDispatcher._assign_task">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="papyros.base.TaskDispatcher-class.html#_discard_queue" class="summary-sig-name">_discard_queue</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">task_queue</span>)</span><br />
+      Disassociate the given queue from this dispatcher.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="papyros.base-pysrc.html#TaskDispatcher._discard_queue">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="papyros.base.TaskDispatcher-class.html#_make_queue" class="summary-sig-name">_make_queue</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">size</span>=<span class="summary-sig-default">0</span>)</span><br />
+      Create a new <a href="papyros.base.TaskQueue-class.html" 
+      class="link">TaskQueue</a>.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="papyros.base-pysrc.html#TaskDispatcher._make_queue">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="papyros.base.TaskDispatcher-class.html#_push_task" class="summary-sig-name">_push_task</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">task</span>,
+        <span class="summary-sig-arg">task_queue</span>,
+        <span class="summary-sig-arg">timeout</span>)</span><br />
+      Push the given task from the given task queue to this 
+      dispatcher.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="papyros.base-pysrc.html#TaskDispatcher._push_task">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="papyros.base.TaskDispatcher-class.html#close" class="summary-sig-name">close</a>(<span class="summary-sig-arg">self</span>)</span><br />
+      Release the resources associated with this dispatcher.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="papyros.base-pysrc.html#TaskDispatcher.close">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="papyros.base.TaskDispatcher-class.html#execute" class="summary-sig-name">execute</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">tasks</span>,
+        <span class="summary-sig-arg">timeout</span>=<span class="summary-sig-default">None</span>,
+        <span class="summary-sig-arg">ordered</span>=<span class="summary-sig-default">False</span>,
+        <span class="summary-sig-arg">chunksize</span>=<span class="summary-sig-default">1</span>,
+        <span class="summary-sig-arg">qsize</span>=<span class="summary-sig-default">0</span>)</span><br />
+      Execute the given tasks.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="papyros.base-pysrc.html#TaskDispatcher.execute">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="papyros.base.TaskDispatcher-class.html#make_queue" class="summary-sig-name">make_queue</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">size</span>=<span class="summary-sig-default">0</span>)</span><br />
+      Create a new <a href="papyros.base.TaskQueue-class.html" 
+      class="link">TaskQueue</a> and associate it with this dispatcher.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="papyros.base-pysrc.html#TaskDispatcher.make_queue">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="num_queues"></a><span class="summary-sig-name">num_queues</span>(<span class="summary-sig-arg">self</span>)</span><br />
+      Return the number of active <a 
+      href="papyros.base.TaskQueue-class.html" class="link">task queues</a>
+      of this dispatcher.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="papyros.base-pysrc.html#TaskDispatcher.num_queues">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="num_tasks"></a><span class="summary-sig-name">num_tasks</span>(<span class="summary-sig-arg">self</span>)</span><br />
+      Return the (approximate) number of unassigned <a 
+      href="papyros.task.Task-class.html" class="link">tasks</a> of this 
+      dispatcher.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="papyros.base-pysrc.html#TaskDispatcher.num_tasks">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+  <tr>
+    <td colspan="2" class="summary">
+    <p class="indent-wrapped-lines"><b>Inherited from <code>object</code></b>:
+      <code>__delattr__</code>,
+      <code>__getattribute__</code>,
+      <code>__hash__</code>,
+      <code>__new__</code>,
+      <code>__reduce__</code>,
+      <code>__reduce_ex__</code>,
+      <code>__repr__</code>,
+      <code>__setattr__</code>,
+      <code>__str__</code>
+      </p>
+    </td>
+  </tr>
+</table>
+<!-- ==================== PROPERTIES ==================== -->
+<a name="section-Properties"></a>
+<table class="summary" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr bgcolor="#70b0f0" class="table-header">
+  <td colspan="2" class="table-header">
+    <table border="0" cellpadding="0" cellspacing="0" width="100%">
+      <tr valign="top">
+        <td align="left"><span class="table-header">Properties</span></td>
+        <td align="right" valign="top"
+         ><span class="options">[<a href="#section-Properties"
+         class="privatelink" onclick="toggle_private();"
+         >hide private</a>]</span></td>
+      </tr>
+    </table>
+  </td>
+</tr>
+  <tr>
+    <td colspan="2" class="summary">
+    <p class="indent-wrapped-lines"><b>Inherited from <code>object</code></b>:
+      <code>__class__</code>
+      </p>
+    </td>
+  </tr>
+</table>
+<!-- ==================== METHOD DETAILS ==================== -->
+<a name="section-MethodDetails"></a>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr bgcolor="#70b0f0" class="table-header">
+  <td colspan="2" class="table-header">
+    <table border="0" cellpadding="0" cellspacing="0" width="100%">
+      <tr valign="top">
+        <td align="left"><span class="table-header">Method Details</span></td>
+        <td align="right" valign="top"
+         ><span class="options">[<a href="#section-MethodDetails"
+         class="privatelink" onclick="toggle_private();"
+         >hide private</a>]</span></td>
+      </tr>
+    </table>
+  </td>
+</tr>
+</table>
+<a name="__init__"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">__init__</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">size</span>=<span class="sig-default">0</span>)</span>
+    <br /><em class="fname">(Constructor)</em>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="papyros.base-pysrc.html#TaskDispatcher.__init__">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </table>
+  
+  Initialize this dispatcher.
+  <dl class="fields">
+    <dt>Parameters:</dt>
+    <dd><ul class="nomargin-top">
+        <li><strong class="pname"><code>size</code></strong> - The maximum number of unassigned tasks (unlimited by default).
+          Trying to push a new <a href="papyros.task.Task-class.html" 
+          class="link">Task</a> when <code>size</code> tasks are unassigned
+          blocks or raises <a href="papyros.TimeoutError-class.html" 
+          class="link">TimeoutError</a>.</li>
+    </ul></dd>
+    <dt>Overrides:
+      object.__init__
+    </dt>
+  </dl>
+</td></tr></table>
+</div>
+<a name="_assign_task"></a>
+<div class="private">
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">_assign_task</span>(<span class="sig-arg">self</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="papyros.base-pysrc.html#TaskDispatcher._assign_task">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </table>
+  
+  <p>Pop and return the next unassigned non cancelled task.</p>
+  This method is to called by a <a href="papyros.base.Worker-class.html"
+  class="link">Worker</a> of this dispatcher.
+  <dl class="fields">
+    <dt>Returns:</dt>
+        <dd>An unassigned (task, task_queue) tuple, or None if there are 
+          no unassigned tasks.</dd>
+  </dl>
+</td></tr></table>
+</div>
+<a name="_discard_queue"></a>
+<div class="private">
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">_discard_queue</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">task_queue</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="papyros.base-pysrc.html#TaskDispatcher._discard_queue">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </table>
+  
+  <p>Disassociate the given queue from this dispatcher.</p>
+  All still unassigned tasks of this queue will be dropped. Attempting 
+  to push a new task by this queue will raise a RuntimeError.
+  <dl class="fields">
+  </dl>
+</td></tr></table>
+</div>
+<a name="_make_queue"></a>
+<div class="private">
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">_make_queue</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">size</span>=<span class="sig-default">0</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="papyros.base-pysrc.html#TaskDispatcher._make_queue">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </table>
+  
+  <p>Create a new <a href="papyros.base.TaskQueue-class.html" 
+  class="link">TaskQueue</a>.</p>
+  Can be overriden by subclasses.
+  <dl class="fields">
+    <dt>Parameters:</dt>
+    <dd><ul class="nomargin-top">
+        <li><strong class="pname"><code>size</code></strong> - The <a href="papyros.base.TaskQueue-class.html#__init__" 
+          class="link">size</a> of the new task queue.</li>
+    </ul></dd>
+    <dt>Returns:</dt>
+        <dd>The new <a href="papyros.base.TaskQueue-class.html" 
+          class="link">TaskQueue</a>.</dd>
+  </dl>
+</td></tr></table>
+</div>
+<a name="_push_task"></a>
+<div class="private">
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">_push_task</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">task</span>,
+        <span class="sig-arg">task_queue</span>,
+        <span class="sig-arg">timeout</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="papyros.base-pysrc.html#TaskDispatcher._push_task">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </table>
+  
+  Push the given task from the given task queue to this dispatcher.
+  <dl class="fields">
+    <dt>Parameters:</dt>
+    <dd><ul class="nomargin-top">
+        <li><strong class="pname"><code>timeout</code></strong> - If <code>timeout is None</code> and the dispatcher is full, 
+          wait until a slot becomes available. If <code>timeout &gt; 
+          0</code> and the dispatcher remains full after 
+          <code>timeout</code> seconds, or if <code>timeout &lt;= 0</code> 
+          and the dispatcher is full now, raise <a 
+          href="papyros.TimeoutError-class.html" 
+          class="link">TimeoutError</a>.</li>
+    </ul></dd>
+    <dt>Raises:</dt>
+    <dd><ul class="nomargin-top">
+        <li><code><strong class='fraise'><a href="papyros.TimeoutError-class.html">TimeoutError</a></strong></code> - If <code>timeout</code> expires before pushing the task.</li>
+    </ul></dd>
+  </dl>
+</td></tr></table>
+</div>
+<a name="close"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">close</span>(<span class="sig-arg">self</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="papyros.base-pysrc.html#TaskDispatcher.close">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </table>
+  
+  <p>Release the resources associated with this dispatcher.</p>
+  A subsequent attempt to modify the dispatcher raises <a 
+  href="papyros.base.ClosedTaskDispatcherError-class.html" 
+  class="link">ClosedTaskDispatcherError</a>.
+  <dl class="fields">
+  </dl>
+</td></tr></table>
+</div>
+<a name="execute"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">execute</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">tasks</span>,
+        <span class="sig-arg">timeout</span>=<span class="sig-default">None</span>,
+        <span class="sig-arg">ordered</span>=<span class="sig-default">False</span>,
+        <span class="sig-arg">chunksize</span>=<span class="sig-default">1</span>,
+        <span class="sig-arg">qsize</span>=<span class="sig-default">0</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="papyros.base-pysrc.html#TaskDispatcher.execute">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </table>
+  
+  Execute the given tasks.
+  <dl class="fields">
+    <dt>Parameters:</dt>
+    <dd><ul class="nomargin-top">
+        <li><strong class="pname"><code>tasks</code></strong> - An iterable of <a href="papyros.task.Task-class.html" 
+          class="link">tasks</a> to be executed.</li>
+        <li><strong class="pname"><code>timeout</code></strong> - An upper bound of how long is a task expected to take. Useful 
+          to prevent waiting for tasks that take forever to complete for 
+          whatever reason.</li>
+        <li><strong class="pname"><code>ordered</code></strong> - If True, the order of the yielded results matches the the 
+          order of the tasks that generated them. If False, the results' 
+          order is unspecified.</li>
+        <li><strong class="pname"><code>chunksize</code></strong> - The <code>tasks</code> iterable is chunked into slices of this
+          size (or less) before being submitted to the dispatcher and 
+          workers.</li>
+        <li><strong class="pname"><code>qsize</code></strong> - The <a href="papyros.base.TaskQueue-class.html#__init__" 
+          class="link">size</a> of the underlying task queue.</li>
+    </ul></dd>
+    <dt>Returns:</dt>
+        <dd>An iterator over the results of the executed tasks.</dd>
+    <dt>Raises:</dt>
+    <dd><ul class="nomargin-top">
+        <li><code><strong class='fraise'><a href="papyros.TimeoutError-class.html">TimeoutError</a></strong></code> - If a call to the returned iterator's <code>next()</code> exceeds
+        the <code>timeout</code>.</li>
+    </ul></dd>
+  </dl>
+</td></tr></table>
+</div>
+<a name="make_queue"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">make_queue</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">size</span>=<span class="sig-default">0</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="papyros.base-pysrc.html#TaskDispatcher.make_queue">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </table>
+  
+  Create a new <a href="papyros.base.TaskQueue-class.html" 
+  class="link">TaskQueue</a> and associate it with this dispatcher.
+  <dl class="fields">
+    <dt>Parameters:</dt>
+    <dd><ul class="nomargin-top">
+        <li><strong class="pname"><code>size</code></strong> - The <a href="papyros.base.TaskQueue-class.html#__init__" 
+          class="link">size</a> of the new task queue.</li>
+    </ul></dd>
+    <dt>Returns:</dt>
+        <dd>The new <a href="papyros.base.TaskQueue-class.html" 
+          class="link">TaskQueue</a>.</dd>
+  </dl>
+</td></tr></table>
+</div>
+<br />
+<!-- ==================== NAVIGATION BAR ==================== -->
+<table class="navbar" border="0" width="100%" cellpadding="0"
+       bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="middle">
+
+  <!-- Tree link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="module-tree.html">Trees</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Index link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="identifier-index.html">Indices</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Help link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="help.html">Help</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Project homepage -->
+      <th class="navbar" align="right" width="100%">
+        <table border="0" cellpadding="0" cellspacing="0">
+          <tr><th class="navbar" align="center"
+            >papyros documentation</th>
+          </tr></table></th>
+  </tr>
+</table>
+<table border="0" cellpadding="0" cellspacing="0" width="100%%">
+  <tr>
+    <td align="left" class="footer">
+    Generated by Epydoc 3.0beta1 on Tue Aug 12 05:39:45 2008
+    </td>
+    <td align="right" class="footer">
+      <a href="http://epydoc.sourceforge.net">http://epydoc.sourceforge.net</a>
+    </td>
+  </tr>
+</table>
+
+<script type="text/javascript">
+  <!--
+  // Private objects are initially displayed (because if
+  // javascript is turned off then we want them to be
+  // visible); but by default, we want to hide them.  So hide
+  // them unless we have a cookie that says to show them.
+  checkCookie()
+  // -->
+</script>
+  
+</body>
+</html>

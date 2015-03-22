@@ -1,0 +1,123 @@
+#!/usr/bin/env python
+
+'''Starts the papyros distributed dispatcher and worker processes.
+
+Synopsis::
+    start-papyros (dispatcher|workers) [options]
+
+For the available dispatcher options run::
+    start-papyros dispatcher --help
+For the available worker options run::
+    start-papyros workers --help
+'''
+
+import os
+import sys
+import logging
+from subprocess import Popen
+from optparse import OptionParser, make_option
+
+loglevels = ('CRITICAL', 'ERROR', 'WARNING', 'INFO', 'DEBUG')
+
+def run_dispatcher():
+    '''Create and run the dispatcher.'''
+    options = OptionParser(
+        usage = '%prog dispatcher [options]',
+        option_list = [
+            make_option('-g', '--group',
+                        help="Distributed group name"),
+            make_option('-q', '--size', type='int', default=0,
+                        help="Maximum number of unassigned tasks"),
+            make_option('-s', '--silent', action='store_true',
+                        help='Do not print logging information in standard error'),
+            make_option('-f', '--logfile', action='store_true',
+                        help='Keep a logfile'),
+            make_option('-l', '--loglevel', choices=loglevels, default='WARNING',
+                        help='Logging level %s' % (loglevels,)),
+            make_option('-c', '--config', metavar='FILE',
+                        help='Pyro config file'),
+    ]).parse_args()[0]
+    if options.config:
+        import Pyro
+        Pyro.config.setup(options.config)
+    import papyros  # should be imported after Pyro.config is setup
+    dispatcher = papyros.PyroTaskDispatcher(options.size, options.group)
+    papyros.config_logger(stderr=not options.silent, mode='a',
+                          level=getattr(logging, options.loglevel),
+                          logfile=options.logfile and '%s.log' % dispatcher)
+    dispatcher.run()
+
+
+def run_workers():
+    '''Create and run the worker processes.'''
+    options = OptionParser(
+        usage = '%prog workers [options]',
+        option_list = [
+            make_option('-n', '--num', type='int',
+                        help='Number of worker processes to spawn (default=#cpus)'),
+            make_option('-g', '--group',
+                        help='Distributed group name'),
+            make_option('-t', '--timeout', type='float', default=10.0,
+                        help='Look for the dispatcher every TIMEOUT seconds when '
+                             'disconnected'),
+            make_option('-s', '--silent', action='store_true',
+                        help='Do not print logging information in standard error'),
+            make_option('-f', '--logfile', action='store_true',
+                        help='Keep a logfile for each worker'),
+            make_option('-l', '--loglevel', choices=loglevels, default='WARNING',
+                        help='Logging level %s' % (loglevels,)),
+            make_option('-T', '--tracebacks', action='store_true',
+                        help='Log exception tracebacks'),
+            make_option('-c', '--config', metavar='FILE',
+                        help='Pyro configuration file'),
+    ]).parse_args()[0]
+    if options.config:
+        import Pyro
+        Pyro.config.setup(options.config)
+    import papyros  # should be imported after Pyro.config is setup
+    if not options.num:
+        options.num = papyros.detect_cpus()
+    if options.num > 1:     # spawn N single-worker processes
+        n = options.num
+        options.num = 1
+        for process in [run_script(sys.argv[0], 'workers', **options.__dict__)
+                        for _ in xrange(n)]:
+            try: process.wait()
+            except KeyboardInterrupt: pass
+    else:                   # single worker process
+        worker = papyros.PyroWorker(options.group)
+        papyros.config_logger(stderr=not options.silent,
+                              level=getattr(logging, options.loglevel),
+                              logfile=options.logfile and '%s.log' % worker,
+                              mode='w')
+        worker.run(timeout=options.timeout, tracebacks=options.tracebacks)
+
+
+def run_script(script, *pos_opts, **kwd_opts):
+    '''Run a python script with the given options.'''
+    cmd = [sys.executable, script]
+    cmd.extend(pos_opts)
+    for key,value in kwd_opts.iteritems():
+        if not value and value != 0:
+            continue
+        elif value and isinstance(value, bool):
+            cmd.append('--%s' % key)
+        else:
+            cmd.append('--%s=%s' % (key,value))
+    proc = Popen(cmd)
+    print 'Spawned child process (PID=%d): %s' % (proc.pid, ' '.join(cmd))
+    return proc
+
+
+if __name__ == '__main__':
+    # as a convenience, add the current directory in sys.path so that modules
+    # under it are automatically importable
+    if os.getcwd() not in sys.path:
+        sys.path.append(os.getcwd())
+    if len(sys.argv) > 1:
+        mode = sys.argv.pop(1)
+        if mode == 'dispatcher':
+            sys.exit(run_dispatcher())
+        elif mode == 'workers':
+            sys.exit(run_workers())
+    sys.exit('Usage: %s [dispatcher|workers] --help' % sys.argv[0])

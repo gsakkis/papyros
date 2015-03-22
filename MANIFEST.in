@@ -1,0 +1,5 @@
+include LICENSE README.txt README.html
+include examples/*.py examples/README.txt
+exclude examples/benchmark.py
+include docs/*
+prune */.svn

@@ -1,0 +1,411 @@
+<?xml version="1.0" encoding="ascii"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+          "DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <title>papyros.distributed</title>
+  <link rel="stylesheet" href="epydoc.css" type="text/css" />
+  <script type="text/javascript" src="epydoc.js"></script>
+</head>
+
+<body bgcolor="white" text="black" link="blue" vlink="#204080"
+      alink="#204080">
+<!-- ==================== NAVIGATION BAR ==================== -->
+<table class="navbar" border="0" width="100%" cellpadding="0"
+       bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="middle">
+
+  <!-- Tree link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="module-tree.html">Trees</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Index link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="identifier-index.html">Indices</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Help link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="help.html">Help</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Project homepage -->
+      <th class="navbar" align="right" width="100%">
+        <table border="0" cellpadding="0" cellspacing="0">
+          <tr><th class="navbar" align="center"
+            >papyros documentation</th>
+          </tr></table></th>
+  </tr>
+</table>
+<table width="100%" cellpadding="0" cellspacing="0">
+  <tr valign="top">
+    <td width="100%">
+      <span class="breadcrumbs">
+        <a href="papyros-module.html">Package&nbsp;papyros</a> ::
+        Module&nbsp;distributed
+      </span>
+    </td>
+    <td>
+      <table cellpadding="0" cellspacing="0">
+        <!-- hide/show private -->
+        <tr><td align="right"><span class="options">[<a href="javascript:void(0);" class="privatelink"
+    onclick="toggle_private();">hide&nbsp;private</a>]</span></td></tr>
+        <tr><td align="right"><span class="options"
+            >[<a href="frames.html" target="_top">frames</a
+            >]&nbsp;|&nbsp;<a href="papyros.distributed-module.html"
+            target="_top">no&nbsp;frames</a>]</span></td></tr>
+      </table>
+    </td>
+  </tr>
+</table>
+<!-- ==================== MODULE DESCRIPTION ==================== -->
+<h1 class="epydoc">Module distributed</h1><span class="codelink"><a href="papyros.distributed-pysrc.html">source&nbsp;code</a></span><br /><br />
+<p>A distributed process implementation of the papyros API.</p>
+  Both the <a href="papyros.base.TaskDispatcher-class.html" 
+  class="link">TaskDispatcher</a> and each <a 
+  href="papyros.base.Worker-class.html" class="link">Worker</a> is a 
+  separate process, running on one or more interconnected machines.<br /><br />
+
+<hr />
+<div class="fields">      <p><strong>Requires:</strong>
+        <a href="http://pyro.sourceforge.net/" target="_top">Pyro 
+        3.7</a>.
+      </p>
+</div><!-- ==================== CLASSES ==================== -->
+<a name="section-Classes"></a>
+<table class="summary" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr bgcolor="#70b0f0" class="table-header">
+  <td colspan="2" class="table-header">
+    <table border="0" cellpadding="0" cellspacing="0" width="100%">
+      <tr valign="top">
+        <td align="left"><span class="table-header">Classes</span></td>
+        <td align="right" valign="top"
+         ><span class="options">[<a href="#section-Classes"
+         class="privatelink" onclick="toggle_private();"
+         >hide private</a>]</span></td>
+      </tr>
+    </table>
+  </td>
+</tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a href="papyros.distributed.NonRemoteMethodError-class.html" class="summary-name">NonRemoteMethodError</a><br />
+      Tried to call remotely a method allowed to be called locally 
+        only.
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a href="papyros.distributed.PyroTaskDispatcher-class.html" class="summary-name">PyroTaskDispatcher</a><br />
+      A <a href="papyros.base.TaskDispatcher-class.html" 
+        class="link">TaskDispatcher</a> run as a (potentially remote) 
+        process.
+    </td>
+  </tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a href="papyros.distributed.PyroTaskDispatcherProxy-class.html" class="summary-name">PyroTaskDispatcherProxy</a><br />
+      A proxy class of <a 
+        href="papyros.distributed.PyroTaskDispatcher-class.html" 
+        class="link">PyroTaskDispatcher</a>.
+    </td>
+  </tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a href="papyros.distributed.PyroTaskQueue-class.html" class="summary-name">PyroTaskQueue</a><br />
+      A <a href="papyros.base.TaskQueue-class.html" 
+        class="link">TaskQueue</a> used for distributed execution.
+    </td>
+  </tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a href="papyros.distributed.PyroTaskQueueProxy-class.html" class="summary-name">PyroTaskQueueProxy</a><br />
+      A proxy class of <a 
+        href="papyros.distributed.PyroTaskQueue-class.html" 
+        class="link">PyroTaskQueue</a>.
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a href="papyros.distributed.PyroWorker-class.html" class="summary-name">PyroWorker</a><br />
+      A <a href="papyros.base.Worker-class.html" 
+        class="link">Worker</a> run as a (potentially remote) process.
+    </td>
+  </tr>
+</table>
+<!-- ==================== FUNCTIONS ==================== -->
+<a name="section-Functions"></a>
+<table class="summary" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr bgcolor="#70b0f0" class="table-header">
+  <td colspan="2" class="table-header">
+    <table border="0" cellpadding="0" cellspacing="0" width="100%">
+      <tr valign="top">
+        <td align="left"><span class="table-header">Functions</span></td>
+        <td align="right" valign="top"
+         ><span class="options">[<a href="#section-Functions"
+         class="privatelink" onclick="toggle_private();"
+         >hide private</a>]</span></td>
+      </tr>
+    </table>
+  </td>
+</tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="papyros.distributed-module.html#set_nameserver" class="summary-sig-name">set_nameserver</a>(<span class="summary-sig-arg">host</span>=<span class="summary-sig-default">None</span>,
+        <span class="summary-sig-arg">port</span>=<span class="summary-sig-default">None</span>)</span><br />
+      Specify the Pyro NameServer address.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="papyros.distributed-pysrc.html#set_nameserver">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="papyros.distributed-module.html#register" class="summary-sig-name">register</a>(<span class="summary-sig-arg">obj</span>,
+        <span class="summary-sig-arg">name</span>,
+        <span class="summary-sig-arg">force</span>=<span class="summary-sig-default">False</span>)</span><br />
+      Register <code>obj</code> to the <code>PYRO_DAEMON</code> with the
+      given <code>name</code>.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="papyros.distributed-pysrc.html#register">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="papyros.distributed-module.html#init_pyro" class="summary-sig-name">init_pyro</a>(<span class="summary-sig-arg">server</span>)</span><br />
+      Ensure Pyro is initialized (or initialize it if not).</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="papyros.distributed-pysrc.html#init_pyro">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+</table>
+<!-- ==================== VARIABLES ==================== -->
+<a name="section-Variables"></a>
+<table class="summary" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr bgcolor="#70b0f0" class="table-header">
+  <td colspan="2" class="table-header">
+    <table border="0" cellpadding="0" cellspacing="0" width="100%">
+      <tr valign="top">
+        <td align="left"><span class="table-header">Variables</span></td>
+        <td align="right" valign="top"
+         ><span class="options">[<a href="#section-Variables"
+         class="privatelink" onclick="toggle_private();"
+         >hide private</a>]</span></td>
+      </tr>
+    </table>
+  </td>
+</tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a name="PYRO_DAEMON"></a><span class="summary-name">PYRO_DAEMON</span> = <code title="None">None</code>
+    </td>
+  </tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a name="ROOT_GROUP"></a><span class="summary-name">ROOT_GROUP</span> = <code title="':Papyros'"><code class="variable-quote">'</code><code class="variable-string">:Papyros</code><code class="variable-quote">'</code></code>
+    </td>
+  </tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a name="NAME_SERVER_LOCATOR"></a><span class="summary-name">NAME_SERVER_LOCATOR</span> = <code title="None">None</code>
+    </td>
+  </tr>
+</table>
+<!-- ==================== FUNCTION DETAILS ==================== -->
+<a name="section-FunctionDetails"></a>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr bgcolor="#70b0f0" class="table-header">
+  <td colspan="2" class="table-header">
+    <table border="0" cellpadding="0" cellspacing="0" width="100%">
+      <tr valign="top">
+        <td align="left"><span class="table-header">Function Details</span></td>
+        <td align="right" valign="top"
+         ><span class="options">[<a href="#section-FunctionDetails"
+         class="privatelink" onclick="toggle_private();"
+         >hide private</a>]</span></td>
+      </tr>
+    </table>
+  </td>
+</tr>
+</table>
+<a name="set_nameserver"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">set_nameserver</span>(<span class="sig-arg">host</span>=<span class="sig-default">None</span>,
+        <span class="sig-arg">port</span>=<span class="sig-default">None</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="papyros.distributed-pysrc.html#set_nameserver">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </table>
+  
+  <p>Specify the Pyro NameServer address.</p>
+  If this function is not called, the NameServer is attempted to be 
+  discovered automatically by a broadcast lookup.
+  <dl class="fields">
+    <dt>Parameters:</dt>
+    <dd><ul class="nomargin-top">
+        <li><strong class="pname"><code>host</code></strong> - The hostname that is initially tried to find the NameServer 
+          on, or when the broadcast lookup mechanism fails.</li>
+        <li><strong class="pname"><code>port</code></strong> - The socket number on which the Name Server will listen for 
+          incoming requests.</li>
+    </ul></dd>
+  </dl>
+</td></tr></table>
+</div>
+<a name="register"></a>
+<div class="private">
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">register</span>(<span class="sig-arg">obj</span>,
+        <span class="sig-arg">name</span>,
+        <span class="sig-arg">force</span>=<span class="sig-default">False</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="papyros.distributed-pysrc.html#register">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </table>
+  
+  Register <code>obj</code> to the <code>PYRO_DAEMON</code> with the 
+  given <code>name</code>.
+  <dl class="fields">
+    <dt>Parameters:</dt>
+    <dd><ul class="nomargin-top">
+        <li><strong class="pname"><code>obj</code></strong> - An <code>ObjBase</code> instance.</li>
+        <li><strong class="pname"><code>name</code></strong> - The fully qualified object's name. If it is a dotted name 
+          (e.g. 'my.object.name' it creates all necessary intermedieate 
+          nameserver groups ('my', 'my.object').</li>
+        <li><strong class="pname"><code>force</code></strong> - If False and there is already an entry for the given name, 
+          <code>NamingError</code> is raised. If True, the previous object 
+          is unregistered and <code>obj</code> is registered in its 
+          place.</li>
+    </ul></dd>
+  </dl>
+</td></tr></table>
+</div>
+<a name="init_pyro"></a>
+<div class="private">
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">init_pyro</span>(<span class="sig-arg">server</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="papyros.distributed-pysrc.html#init_pyro">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </table>
+  
+  Ensure Pyro is initialized (or initialize it if not).
+  <dl class="fields">
+    <dt>Parameters:</dt>
+    <dd><ul class="nomargin-top">
+        <li><strong class="pname"><code>server</code></strong> - If True, initialize Pyro as a server, otherwise as a 
+          client.</li>
+    </ul></dd>
+  </dl>
+</td></tr></table>
+</div>
+<br />
+<!-- ==================== NAVIGATION BAR ==================== -->
+<table class="navbar" border="0" width="100%" cellpadding="0"
+       bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="middle">
+
+  <!-- Tree link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="module-tree.html">Trees</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Index link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="identifier-index.html">Indices</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Help link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="help.html">Help</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Project homepage -->
+      <th class="navbar" align="right" width="100%">
+        <table border="0" cellpadding="0" cellspacing="0">
+          <tr><th class="navbar" align="center"
+            >papyros documentation</th>
+          </tr></table></th>
+  </tr>
+</table>
+<table border="0" cellpadding="0" cellspacing="0" width="100%%">
+  <tr>
+    <td align="left" class="footer">
+    Generated by Epydoc 3.0beta1 on Tue Aug 12 05:39:44 2008
+    </td>
+    <td align="right" class="footer">
+      <a href="http://epydoc.sourceforge.net">http://epydoc.sourceforge.net</a>
+    </td>
+  </tr>
+</table>
+
+<script type="text/javascript">
+  <!--
+  // Private objects are initially displayed (because if
+  // javascript is turned off then we want them to be
+  // visible); but by default, we want to hide them.  So hide
+  // them unless we have a cookie that says to show them.
+  checkCookie()
+  // -->
+</script>
+  
+</body>
+</html>

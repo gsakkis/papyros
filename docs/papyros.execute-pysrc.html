@@ -1,0 +1,493 @@
+<?xml version="1.0" encoding="ascii"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+          "DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <title>papyros.execute</title>
+  <link rel="stylesheet" href="epydoc.css" type="text/css" />
+  <script type="text/javascript" src="epydoc.js"></script>
+</head>
+
+<body bgcolor="white" text="black" link="blue" vlink="#204080"
+      alink="#204080">
+<!-- ==================== NAVIGATION BAR ==================== -->
+<table class="navbar" border="0" width="100%" cellpadding="0"
+       bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="middle">
+
+  <!-- Tree link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="module-tree.html">Trees</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Index link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="identifier-index.html">Indices</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Help link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="help.html">Help</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Project homepage -->
+      <th class="navbar" align="right" width="100%">
+        <table border="0" cellpadding="0" cellspacing="0">
+          <tr><th class="navbar" align="center"
+            >papyros documentation</th>
+          </tr></table></th>
+  </tr>
+</table>
+<table width="100%" cellpadding="0" cellspacing="0">
+  <tr valign="top">
+    <td width="100%">
+      <span class="breadcrumbs">
+        <a href="papyros-module.html">Package&nbsp;papyros</a> ::
+        Module&nbsp;execute
+      </span>
+    </td>
+    <td>
+      <table cellpadding="0" cellspacing="0">
+        <!-- hide/show private -->
+        <tr><td align="right"><span class="options">[<a href="javascript:void(0);" class="privatelink"
+    onclick="toggle_private();">hide&nbsp;private</a>]</span></td></tr>
+        <tr><td align="right"><span class="options"
+            >[<a href="frames.html" target="_top">frames</a
+            >]&nbsp;|&nbsp;<a href="papyros.execute-pysrc.html"
+            target="_top">no&nbsp;frames</a>]</span></td></tr>
+      </table>
+    </td>
+  </tr>
+</table>
+<h1 class="epydoc">Source Code for <a href="papyros.execute-module.html">Module papyros.execute</a></h1>
+<pre class="py-src">
+<a name="L1"></a><tt class="py-lineno">  1</tt>  <tt class="py-line"><tt class="py-docstring">'''Implementation of L{TaskDispatcher.execute}.</tt> </tt>
+<a name="L2"></a><tt class="py-lineno">  2</tt>  <tt class="py-line"><tt class="py-docstring"></tt> </tt>
+<a name="L3"></a><tt class="py-lineno">  3</tt>  <tt class="py-line"><tt class="py-docstring">Normally there is no need to be imported directly by clients.</tt> </tt>
+<a name="L4"></a><tt class="py-lineno">  4</tt>  <tt class="py-line"><tt class="py-docstring">'''</tt> </tt>
+<a name="L5"></a><tt class="py-lineno">  5</tt>  <tt class="py-line"> </tt>
+<a name="L6"></a><tt class="py-lineno">  6</tt>  <tt class="py-line"><tt class="py-name">__all__</tt> <tt class="py-op">=</tt> <tt class="py-op">[</tt><tt class="py-string">'ExecuteIterator'</tt><tt class="py-op">]</tt> </tt>
+<a name="L7"></a><tt class="py-lineno">  7</tt>  <tt class="py-line"> </tt>
+<a name="L8"></a><tt class="py-lineno">  8</tt>  <tt class="py-line"><tt class="py-keyword">import</tt> <tt class="py-name">heapq</tt> </tt>
+<a name="L9"></a><tt class="py-lineno">  9</tt>  <tt class="py-line"><tt class="py-keyword">import</tt> <tt class="py-name">threading</tt> </tt>
+<a name="L10"></a><tt class="py-lineno"> 10</tt>  <tt class="py-line"><tt class="py-keyword">from</tt> <tt class="py-name">copy</tt> <tt class="py-keyword">import</tt> <tt class="py-name">copy</tt> </tt>
+<a name="L11"></a><tt class="py-lineno"> 11</tt>  <tt class="py-line"><tt class="py-keyword">from</tt> <tt class="py-name">itertools</tt> <tt class="py-keyword">import</tt> <tt class="py-name">takewhile</tt><tt class="py-op">,</tt> <tt class="py-name">imap</tt><tt class="py-op">,</tt> <tt class="py-name">starmap</tt><tt class="py-op">,</tt> <tt class="py-name">islice</tt><tt class="py-op">,</tt> <tt class="py-name">repeat</tt> </tt>
+<a name="L12"></a><tt class="py-lineno"> 12</tt>  <tt class="py-line"> </tt>
+<a name="L13"></a><tt class="py-lineno"> 13</tt>  <tt class="py-line"><tt class="py-keyword">from</tt> <tt id="link-0" class="py-name" targets="Package papyros=papyros-module.html"><a title="papyros" class="py-name" href="#" onclick="return doclink('link-0', 'papyros', 'link-0');">papyros</a></tt><tt class="py-op">.</tt><tt id="link-1" class="py-name" targets="Module papyros.task=papyros.task-module.html"><a title="papyros.task" class="py-name" href="#" onclick="return doclink('link-1', 'task', 'link-1');">task</a></tt> <tt class="py-keyword">import</tt> <tt id="link-2" class="py-name" targets="Class papyros.task.Task=papyros.task.Task-class.html"><a title="papyros.task.Task" class="py-name" href="#" onclick="return doclink('link-2', 'Task', 'link-2');">Task</a></tt> </tt>
+<a name="L14"></a><tt class="py-lineno"> 14</tt>  <tt class="py-line"> </tt>
+<a name="L15"></a><tt class="py-lineno"> 15</tt>  <tt class="py-line"><tt class="py-keyword">try</tt><tt class="py-op">:</tt> <tt class="py-keyword">from</tt> <tt class="py-name">Pyro</tt><tt class="py-op">.</tt><tt class="py-name">core</tt> <tt class="py-keyword">import</tt> <tt class="py-name">DynamicProxy</tt> </tt>
+<a name="L16"></a><tt class="py-lineno"> 16</tt>  <tt class="py-line"><tt class="py-keyword">except</tt> <tt class="py-name">ImportError</tt><tt class="py-op">:</tt> </tt>
+<a name="get_proxy"></a><div id="get_proxy-def"><a name="L17"></a><tt class="py-lineno"> 17</tt> <a class="py-toggle" href="#" id="get_proxy-toggle" onclick="return toggle('get_proxy');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="papyros.execute-module.html#get_proxy">get_proxy</a><tt class="py-op">(</tt><tt class="py-param">obj</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> <tt class="py-keyword">return</tt> <tt class="py-name">obj</tt> </tt>
+</div><a name="L18"></a><tt class="py-lineno"> 18</tt>  <tt class="py-line"><tt class="py-keyword">else</tt><tt class="py-op">:</tt> </tt>
+<a name="L19"></a><tt class="py-lineno"> 19</tt>  <tt class="py-line">    <tt class="py-comment"># Pyro proxies cannot be shared across threads by default; they must be copied</tt> </tt>
+<a name="get_proxy"></a><div id="get_proxy-def"><a name="L20"></a><tt class="py-lineno"> 20</tt> <a class="py-toggle" href="#" id="get_proxy-toggle" onclick="return toggle('get_proxy');">-</a><tt class="py-line"><tt class="py-comment"></tt>    <tt class="py-keyword">def</tt> <a class="py-def-name" href="papyros.execute-module.html#get_proxy">get_proxy</a><tt class="py-op">(</tt><tt class="py-param">obj</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="get_proxy-collapsed" style="display:none;" pad="+++" indent="++++++++"></div><div id="get_proxy-expanded"><a name="L21"></a><tt class="py-lineno"> 21</tt>  <tt class="py-line">        <tt class="py-keyword">if</tt> <tt class="py-name">isinstance</tt><tt class="py-op">(</tt><tt class="py-name">obj</tt><tt class="py-op">,</tt> <tt class="py-name">DynamicProxy</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> <tt class="py-keyword">return</tt> <tt class="py-name">copy</tt><tt class="py-op">(</tt><tt class="py-name">obj</tt><tt class="py-op">)</tt> </tt>
+<a name="L22"></a><tt class="py-lineno"> 22</tt>  <tt class="py-line">        <tt class="py-keyword">else</tt><tt class="py-op">:</tt> <tt class="py-keyword">return</tt> <tt class="py-name">obj</tt> </tt>
+</div><a name="L23"></a><tt class="py-lineno"> 23</tt>  <tt class="py-line"> </tt>
+<a name="L24"></a><tt class="py-lineno"> 24</tt>  <tt class="py-line"><tt class="py-comment">#========== ExecuteIterator ====================================================</tt> </tt>
+<a name="L25"></a><tt class="py-lineno"> 25</tt>  <tt class="py-line"><tt class="py-comment"></tt> </tt>
+<a name="ExecuteIterator"></a><div id="ExecuteIterator-def"><a name="L26"></a><tt class="py-lineno"> 26</tt> <a class="py-toggle" href="#" id="ExecuteIterator-toggle" onclick="return toggle('ExecuteIterator');">-</a><tt class="py-line"><tt class="py-keyword">class</tt> <a class="py-def-name" href="papyros.execute.ExecuteIterator-class.html">ExecuteIterator</a><tt class="py-op">(</tt><tt class="py-base-class">object</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="ExecuteIterator-collapsed" style="display:none;" pad="+++" indent="++++"></div><div id="ExecuteIterator-expanded"><a name="L27"></a><tt class="py-lineno"> 27</tt>  <tt class="py-line">    <tt class="py-docstring">'''An iterator over results of executed tasks.'''</tt> </tt>
+<a name="L28"></a><tt class="py-lineno"> 28</tt>  <tt class="py-line"> </tt>
+<a name="ExecuteIterator.__init__"></a><div id="ExecuteIterator.__init__-def"><a name="L29"></a><tt class="py-lineno"> 29</tt> <a class="py-toggle" href="#" id="ExecuteIterator.__init__-toggle" onclick="return toggle('ExecuteIterator.__init__');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="papyros.execute.ExecuteIterator-class.html#__init__">__init__</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">,</tt> <tt class="py-param">task_queue</tt><tt class="py-op">,</tt> <tt class="py-param">tasks</tt><tt class="py-op">,</tt> <tt class="py-param">timeout</tt><tt class="py-op">=</tt><tt class="py-name">None</tt><tt class="py-op">,</tt> <tt class="py-param">ordered</tt><tt class="py-op">=</tt><tt class="py-name">False</tt><tt class="py-op">,</tt> <tt class="py-param">chunksize</tt><tt class="py-op">=</tt><tt class="py-number">1</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="ExecuteIterator.__init__-collapsed" style="display:none;" pad="+++" indent="++++++++"></div><div id="ExecuteIterator.__init__-expanded"><a name="L30"></a><tt class="py-lineno"> 30</tt>  <tt class="py-line">        <tt class="py-docstring">'''Initialize this iterator.</tt> </tt>
+<a name="L31"></a><tt class="py-lineno"> 31</tt>  <tt class="py-line"><tt class="py-docstring"></tt> </tt>
+<a name="L32"></a><tt class="py-lineno"> 32</tt>  <tt class="py-line"><tt class="py-docstring">        @param task_queue: The L{TaskQueue} to push the given tasks and pop the</tt> </tt>
+<a name="L33"></a><tt class="py-lineno"> 33</tt>  <tt class="py-line"><tt class="py-docstring">            task results from.</tt> </tt>
+<a name="L34"></a><tt class="py-lineno"> 34</tt>  <tt class="py-line"><tt class="py-docstring">        @param tasks, timeout, ordered, chunksize: See L{TaskDispatcher.execute}.</tt> </tt>
+<a name="L35"></a><tt class="py-lineno"> 35</tt>  <tt class="py-line"><tt class="py-docstring">        '''</tt> </tt>
+<a name="L36"></a><tt class="py-lineno"> 36</tt>  <tt class="py-line">        <tt class="py-name">executioner</tt> <tt class="py-op">=</tt> <tt id="link-3" class="py-name" targets="Class papyros.execute.DefaultTaskExecutioner=papyros.execute.DefaultTaskExecutioner-class.html"><a title="papyros.execute.DefaultTaskExecutioner" class="py-name" href="#" onclick="return doclink('link-3', 'DefaultTaskExecutioner', 'link-3');">DefaultTaskExecutioner</a></tt><tt class="py-op">(</tt><tt class="py-name">task_queue</tt><tt class="py-op">,</tt><tt class="py-name">timeout</tt><tt class="py-op">)</tt> </tt>
+<a name="L37"></a><tt class="py-lineno"> 37</tt>  <tt class="py-line">        <tt class="py-comment"># the order is important: first apply the CompositeExecutionDecorator</tt> </tt>
+<a name="L38"></a><tt class="py-lineno"> 38</tt>  <tt class="py-line"><tt class="py-comment"></tt>        <tt class="py-comment"># (if necessary) and then the OrderedExecutionDecorator (if necessary)</tt> </tt>
+<a name="L39"></a><tt class="py-lineno"> 39</tt>  <tt class="py-line"><tt class="py-comment"></tt>        <tt class="py-comment"># so that tasks are first ordered and then bundled into chunks (decorators</tt> </tt>
+<a name="L40"></a><tt class="py-lineno"> 40</tt>  <tt class="py-line"><tt class="py-comment"></tt>        <tt class="py-comment"># are called in the reverse order they are applied)</tt> </tt>
+<a name="L41"></a><tt class="py-lineno"> 41</tt>  <tt class="py-line"><tt class="py-comment"></tt>        <tt class="py-keyword">if</tt> <tt class="py-name">chunksize</tt> <tt class="py-op">&gt;</tt> <tt class="py-number">1</tt><tt class="py-op">:</tt> </tt>
+<a name="L42"></a><tt class="py-lineno"> 42</tt>  <tt class="py-line">            <tt class="py-name">executioner</tt><tt class="py-op">=</tt> <tt id="link-4" class="py-name" targets="Class papyros.execute.CompositeExecutionDecorator=papyros.execute.CompositeExecutionDecorator-class.html"><a title="papyros.execute.CompositeExecutionDecorator" class="py-name" href="#" onclick="return doclink('link-4', 'CompositeExecutionDecorator', 'link-4');">CompositeExecutionDecorator</a></tt><tt class="py-op">(</tt><tt class="py-name">executioner</tt><tt class="py-op">,</tt><tt class="py-name">chunksize</tt><tt class="py-op">)</tt> </tt>
+<a name="L43"></a><tt class="py-lineno"> 43</tt>  <tt class="py-line">        <tt class="py-keyword">if</tt> <tt class="py-name">ordered</tt><tt class="py-op">:</tt> </tt>
+<a name="L44"></a><tt class="py-lineno"> 44</tt>  <tt class="py-line">            <tt class="py-name">executioner</tt> <tt class="py-op">=</tt> <tt id="link-5" class="py-name" targets="Class papyros.execute.OrderedExecutionDecorator=papyros.execute.OrderedExecutionDecorator-class.html"><a title="papyros.execute.OrderedExecutionDecorator" class="py-name" href="#" onclick="return doclink('link-5', 'OrderedExecutionDecorator', 'link-5');">OrderedExecutionDecorator</a></tt><tt class="py-op">(</tt><tt class="py-name">executioner</tt><tt class="py-op">)</tt> </tt>
+<a name="L45"></a><tt class="py-lineno"> 45</tt>  <tt class="py-line">        <tt class="py-name">executioner</tt><tt class="py-op">.</tt><tt id="link-6" class="py-name" targets="Method papyros.execute.DefaultTaskExecutioner.submit()=papyros.execute.DefaultTaskExecutioner-class.html#submit,Method papyros.execute.TaskExecutionDecorator.submit()=papyros.execute.TaskExecutionDecorator-class.html#submit,Method papyros.execute.TaskExecutioner.submit()=papyros.execute.TaskExecutioner-class.html#submit"><a title="papyros.execute.DefaultTaskExecutioner.submit
+papyros.execute.TaskExecutionDecorator.submit
+papyros.execute.TaskExecutioner.submit" class="py-name" href="#" onclick="return doclink('link-6', 'submit', 'link-6');">submit</a></tt><tt class="py-op">(</tt><tt class="py-name">executioner</tt><tt class="py-op">.</tt><tt id="link-7" class="py-name" targets="Method papyros.execute.CompositeExecutionDecorator.adapt_tasks()=papyros.execute.CompositeExecutionDecorator-class.html#adapt_tasks,Method papyros.execute.OrderedExecutionDecorator.adapt_tasks()=papyros.execute.OrderedExecutionDecorator-class.html#adapt_tasks,Method papyros.execute.TaskExecutionDecorator.adapt_tasks()=papyros.execute.TaskExecutionDecorator-class.html#adapt_tasks,Method papyros.execute.TaskExecutioner.adapt_tasks()=papyros.execute.TaskExecutioner-class.html#adapt_tasks"><a title="papyros.execute.CompositeExecutionDecorator.adapt_tasks
+papyros.execute.OrderedExecutionDecorator.adapt_tasks
+papyros.execute.TaskExecutionDecorator.adapt_tasks
+papyros.execute.TaskExecutioner.adapt_tasks" class="py-name" href="#" onclick="return doclink('link-7', 'adapt_tasks', 'link-7');">adapt_tasks</a></tt><tt class="py-op">(</tt><tt class="py-name">tasks</tt><tt class="py-op">)</tt><tt class="py-op">)</tt> </tt>
+<a name="L46"></a><tt class="py-lineno"> 46</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">__executioner</tt> <tt class="py-op">=</tt> <tt class="py-name">executioner</tt> </tt>
+</div><a name="L47"></a><tt class="py-lineno"> 47</tt>  <tt class="py-line"> </tt>
+<a name="ExecuteIterator.__iter__"></a><div id="ExecuteIterator.__iter__-def"><a name="L48"></a><tt class="py-lineno"> 48</tt> <a class="py-toggle" href="#" id="ExecuteIterator.__iter__-toggle" onclick="return toggle('ExecuteIterator.__iter__');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="papyros.execute.ExecuteIterator-class.html#__iter__">__iter__</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> <tt class="py-keyword">return</tt> <tt class="py-name">self</tt> </tt>
+</div><a name="ExecuteIterator.next"></a><div id="ExecuteIterator.next-def"><a name="L49"></a><tt class="py-lineno"> 49</tt> <a class="py-toggle" href="#" id="ExecuteIterator.next-toggle" onclick="return toggle('ExecuteIterator.next');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="papyros.execute.ExecuteIterator-class.html#next">next</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> <tt class="py-keyword">return</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">__executioner</tt><tt class="py-op">.</tt><tt id="link-8" class="py-name" targets="Method papyros.execute.CompositeExecutionDecorator.next()=papyros.execute.CompositeExecutionDecorator-class.html#next,Method papyros.execute.DefaultTaskExecutioner.next()=papyros.execute.DefaultTaskExecutioner-class.html#next,Method papyros.execute.ExecuteIterator.next()=papyros.execute.ExecuteIterator-class.html#next,Method papyros.execute.OrderedExecutionDecorator.next()=papyros.execute.OrderedExecutionDecorator-class.html#next,Method papyros.execute.TaskExecutionDecorator.next()=papyros.execute.TaskExecutionDecorator-class.html#next,Method papyros.execute.TaskExecutioner.next()=papyros.execute.TaskExecutioner-class.html#next"><a title="papyros.execute.CompositeExecutionDecorator.next
+papyros.execute.DefaultTaskExecutioner.next
+papyros.execute.ExecuteIterator.next
+papyros.execute.OrderedExecutionDecorator.next
+papyros.execute.TaskExecutionDecorator.next
+papyros.execute.TaskExecutioner.next" class="py-name" href="#" onclick="return doclink('link-8', 'next', 'link-8');">next</a></tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+</div><a name="ExecuteIterator.close"></a><div id="ExecuteIterator.close-def"><a name="L50"></a><tt class="py-lineno"> 50</tt> <a class="py-toggle" href="#" id="ExecuteIterator.close-toggle" onclick="return toggle('ExecuteIterator.close');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="papyros.execute.ExecuteIterator-class.html#close">close</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> <tt class="py-keyword">return</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">__executioner</tt><tt class="py-op">.</tt><tt id="link-9" class="py-name" targets="Method papyros.base.TaskDispatcher.close()=papyros.base.TaskDispatcher-class.html#close,Method papyros.base.TaskQueue.close()=papyros.base.TaskQueue-class.html#close,Method papyros.distributed.PyroTaskDispatcherProxy.close()=papyros.distributed.PyroTaskDispatcherProxy-class.html#close,Method papyros.distributed.PyroTaskQueue.close()=papyros.distributed.PyroTaskQueue-class.html#close,Method papyros.distributed.PyroTaskQueueProxy.close()=papyros.distributed.PyroTaskQueueProxy-class.html#close,Method papyros.execute.DefaultTaskExecutioner.close()=papyros.execute.DefaultTaskExecutioner-class.html#close,Method papyros.execute.ExecuteIterator.close()=papyros.execute.ExecuteIterator-class.html#close,Method papyros.execute.TaskExecutionDecorator.close()=papyros.execute.TaskExecutionDecorator-class.html#close,Method papyros.execute.TaskExecutioner.close()=papyros.execute.TaskExecutioner-class.html#close"><a title="papyros.base.TaskDispatcher.close
+papyros.base.TaskQueue.close
+papyros.distributed.PyroTaskDispatcherProxy.close
+papyros.distributed.PyroTaskQueue.close
+papyros.distributed.PyroTaskQueueProxy.close
+papyros.execute.DefaultTaskExecutioner.close
+papyros.execute.ExecuteIterator.close
+papyros.execute.TaskExecutionDecorator.close
+papyros.execute.TaskExecutioner.close" class="py-name" href="#" onclick="return doclink('link-9', 'close', 'link-9');">close</a></tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+</div><a name="L51"></a><tt class="py-lineno"> 51</tt>  <tt class="py-line">    <tt class="py-name">__del__</tt> <tt class="py-op">=</tt> <tt id="link-10" class="py-name"><a title="papyros.base.TaskDispatcher.close
+papyros.base.TaskQueue.close
+papyros.distributed.PyroTaskDispatcherProxy.close
+papyros.distributed.PyroTaskQueue.close
+papyros.distributed.PyroTaskQueueProxy.close
+papyros.execute.DefaultTaskExecutioner.close
+papyros.execute.ExecuteIterator.close
+papyros.execute.TaskExecutionDecorator.close
+papyros.execute.TaskExecutioner.close" class="py-name" href="#" onclick="return doclink('link-10', 'close', 'link-9');">close</a></tt> </tt>
+</div><a name="L52"></a><tt class="py-lineno"> 52</tt>  <tt class="py-line"> </tt>
+<a name="L53"></a><tt class="py-lineno"> 53</tt>  <tt class="py-line"><tt class="py-comment">#========== TaskExecutioner ====================================================</tt> </tt>
+<a name="L54"></a><tt class="py-lineno"> 54</tt>  <tt class="py-line"><tt class="py-comment"></tt> </tt>
+<a name="TaskExecutioner"></a><div id="TaskExecutioner-def"><a name="L55"></a><tt class="py-lineno"> 55</tt> <a class="py-toggle" href="#" id="TaskExecutioner-toggle" onclick="return toggle('TaskExecutioner');">-</a><tt class="py-line"><tt class="py-keyword">class</tt> <a class="py-def-name" href="papyros.execute.TaskExecutioner-class.html">TaskExecutioner</a><tt class="py-op">(</tt><tt class="py-base-class">object</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="TaskExecutioner-collapsed" style="display:none;" pad="+++" indent="++++"></div><div id="TaskExecutioner-expanded"><a name="L56"></a><tt class="py-lineno"> 56</tt>  <tt class="py-line">    <tt class="py-docstring">'''Abstract base class for iterators over results of executed tasks.</tt> </tt>
+<a name="L57"></a><tt class="py-lineno"> 57</tt>  <tt class="py-line"><tt class="py-docstring"></tt> </tt>
+<a name="L58"></a><tt class="py-lineno"> 58</tt>  <tt class="py-line"><tt class="py-docstring">    Mainly for documentation reasons, not strictly necessary in Python.</tt> </tt>
+<a name="L59"></a><tt class="py-lineno"> 59</tt>  <tt class="py-line"><tt class="py-docstring">    '''</tt> </tt>
+<a name="TaskExecutioner.__iter__"></a><div id="TaskExecutioner.__iter__-def"><a name="L60"></a><tt class="py-lineno"> 60</tt> <a class="py-toggle" href="#" id="TaskExecutioner.__iter__-toggle" onclick="return toggle('TaskExecutioner.__iter__');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="papyros.execute.TaskExecutioner-class.html#__iter__">__iter__</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="TaskExecutioner.__iter__-collapsed" style="display:none;" pad="+++" indent="++++++++"></div><div id="TaskExecutioner.__iter__-expanded"><a name="L61"></a><tt class="py-lineno"> 61</tt>  <tt class="py-line">        <tt class="py-keyword">return</tt> <tt class="py-name">self</tt> </tt>
+</div><a name="L62"></a><tt class="py-lineno"> 62</tt>  <tt class="py-line"> </tt>
+<a name="TaskExecutioner.next"></a><div id="TaskExecutioner.next-def"><a name="L63"></a><tt class="py-lineno"> 63</tt> <a class="py-toggle" href="#" id="TaskExecutioner.next-toggle" onclick="return toggle('TaskExecutioner.next');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="papyros.execute.TaskExecutioner-class.html#next">next</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="TaskExecutioner.next-collapsed" style="display:none;" pad="+++" indent="++++++++"></div><div id="TaskExecutioner.next-expanded"><a name="L64"></a><tt class="py-lineno"> 64</tt>  <tt class="py-line">        <tt class="py-docstring">'''Return the result of an executed task.</tt> </tt>
+<a name="L65"></a><tt class="py-lineno"> 65</tt>  <tt class="py-line"><tt class="py-docstring"></tt> </tt>
+<a name="L66"></a><tt class="py-lineno"> 66</tt>  <tt class="py-line"><tt class="py-docstring">        @raises StopIteration: If all results have been returned.</tt> </tt>
+<a name="L67"></a><tt class="py-lineno"> 67</tt>  <tt class="py-line"><tt class="py-docstring">        '''</tt> </tt>
+<a name="L68"></a><tt class="py-lineno"> 68</tt>  <tt class="py-line">        <tt class="py-keyword">raise</tt> <tt class="py-name">NotImplementedError</tt><tt class="py-op">(</tt><tt class="py-string">'Abstract method'</tt><tt class="py-op">)</tt> </tt>
+</div><a name="L69"></a><tt class="py-lineno"> 69</tt>  <tt class="py-line"> </tt>
+<a name="TaskExecutioner.submit"></a><div id="TaskExecutioner.submit-def"><a name="L70"></a><tt class="py-lineno"> 70</tt> <a class="py-toggle" href="#" id="TaskExecutioner.submit-toggle" onclick="return toggle('TaskExecutioner.submit');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="papyros.execute.TaskExecutioner-class.html#submit">submit</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">,</tt> <tt class="py-param">tasks</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="TaskExecutioner.submit-collapsed" style="display:none;" pad="+++" indent="++++++++"></div><div id="TaskExecutioner.submit-expanded"><a name="L71"></a><tt class="py-lineno"> 71</tt>  <tt class="py-line">        <tt class="py-docstring">'''Submit the given tasks to this iterator to execute them in the</tt> </tt>
+<a name="L72"></a><tt class="py-lineno"> 72</tt>  <tt class="py-line"><tt class="py-docstring">        background.</tt> </tt>
+<a name="L73"></a><tt class="py-lineno"> 73</tt>  <tt class="py-line"><tt class="py-docstring"></tt> </tt>
+<a name="L74"></a><tt class="py-lineno"> 74</tt>  <tt class="py-line"><tt class="py-docstring">        This can be effectively called only once for a given L{TaskExecutioner}.</tt> </tt>
+<a name="L75"></a><tt class="py-lineno"> 75</tt>  <tt class="py-line"><tt class="py-docstring">        '''</tt> </tt>
+<a name="L76"></a><tt class="py-lineno"> 76</tt>  <tt class="py-line">        <tt class="py-keyword">raise</tt> <tt class="py-name">NotImplementedError</tt><tt class="py-op">(</tt><tt class="py-string">'Abstract method'</tt><tt class="py-op">)</tt> </tt>
+</div><a name="L77"></a><tt class="py-lineno"> 77</tt>  <tt class="py-line"> </tt>
+<a name="TaskExecutioner.adapt_tasks"></a><div id="TaskExecutioner.adapt_tasks-def"><a name="L78"></a><tt class="py-lineno"> 78</tt> <a class="py-toggle" href="#" id="TaskExecutioner.adapt_tasks-toggle" onclick="return toggle('TaskExecutioner.adapt_tasks');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="papyros.execute.TaskExecutioner-class.html#adapt_tasks">adapt_tasks</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">,</tt> <tt class="py-param">tasks</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="TaskExecutioner.adapt_tasks-collapsed" style="display:none;" pad="+++" indent="++++++++"></div><div id="TaskExecutioner.adapt_tasks-expanded"><a name="L79"></a><tt class="py-lineno"> 79</tt>  <tt class="py-line">        <tt class="py-docstring">'''Intended for subclasses that expect tasks to be adapted somehow before</tt> </tt>
+<a name="L80"></a><tt class="py-lineno"> 80</tt>  <tt class="py-line"><tt class="py-docstring">        being submitted. By default it just returns the given tasks.</tt> </tt>
+<a name="L81"></a><tt class="py-lineno"> 81</tt>  <tt class="py-line"><tt class="py-docstring">        '''</tt> </tt>
+<a name="L82"></a><tt class="py-lineno"> 82</tt>  <tt class="py-line">        <tt class="py-keyword">return</tt> <tt class="py-name">tasks</tt> </tt>
+</div><a name="L83"></a><tt class="py-lineno"> 83</tt>  <tt class="py-line"> </tt>
+<a name="TaskExecutioner.close"></a><div id="TaskExecutioner.close-def"><a name="L84"></a><tt class="py-lineno"> 84</tt> <a class="py-toggle" href="#" id="TaskExecutioner.close-toggle" onclick="return toggle('TaskExecutioner.close');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="papyros.execute.TaskExecutioner-class.html#close">close</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="TaskExecutioner.close-collapsed" style="display:none;" pad="+++" indent="++++++++"></div><div id="TaskExecutioner.close-expanded"><a name="L85"></a><tt class="py-lineno"> 85</tt>  <tt class="py-line">        <tt class="py-docstring">'''Perform any necessary cleanup.'''</tt> </tt>
+<a name="L86"></a><tt class="py-lineno"> 86</tt>  <tt class="py-line">        <tt class="py-keyword">pass</tt> </tt>
+</div></div><a name="L87"></a><tt class="py-lineno"> 87</tt>  <tt class="py-line"> </tt>
+<a name="L88"></a><tt class="py-lineno"> 88</tt>  <tt class="py-line"><tt class="py-comment">#========== DefaultTaskExecutioner =============================================</tt> </tt>
+<a name="L89"></a><tt class="py-lineno"> 89</tt>  <tt class="py-line"><tt class="py-comment"></tt> </tt>
+<a name="DefaultTaskExecutioner"></a><div id="DefaultTaskExecutioner-def"><a name="L90"></a><tt class="py-lineno"> 90</tt> <a class="py-toggle" href="#" id="DefaultTaskExecutioner-toggle" onclick="return toggle('DefaultTaskExecutioner');">-</a><tt class="py-line"><tt class="py-keyword">class</tt> <a class="py-def-name" href="papyros.execute.DefaultTaskExecutioner-class.html">DefaultTaskExecutioner</a><tt class="py-op">(</tt><tt class="py-base-class">TaskExecutioner</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="DefaultTaskExecutioner-collapsed" style="display:none;" pad="+++" indent="++++"></div><div id="DefaultTaskExecutioner-expanded"><a name="L91"></a><tt class="py-lineno"> 91</tt>  <tt class="py-line">    <tt class="py-docstring">'''Principal task execution iterator.'''</tt> </tt>
+<a name="L92"></a><tt class="py-lineno"> 92</tt>  <tt class="py-line"> </tt>
+<a name="DefaultTaskExecutioner.__init__"></a><div id="DefaultTaskExecutioner.__init__-def"><a name="L93"></a><tt class="py-lineno"> 93</tt> <a class="py-toggle" href="#" id="DefaultTaskExecutioner.__init__-toggle" onclick="return toggle('DefaultTaskExecutioner.__init__');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="papyros.execute.DefaultTaskExecutioner-class.html#__init__">__init__</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">,</tt> <tt class="py-param">task_queue</tt><tt class="py-op">,</tt> <tt class="py-param">timeout</tt><tt class="py-op">=</tt><tt class="py-name">None</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="DefaultTaskExecutioner.__init__-collapsed" style="display:none;" pad="+++" indent="++++++++"></div><div id="DefaultTaskExecutioner.__init__-expanded"><a name="L94"></a><tt class="py-lineno"> 94</tt>  <tt class="py-line">        <tt class="py-docstring">'''Initialize this iterator.</tt> </tt>
+<a name="L95"></a><tt class="py-lineno"> 95</tt>  <tt class="py-line"><tt class="py-docstring"></tt> </tt>
+<a name="L96"></a><tt class="py-lineno"> 96</tt>  <tt class="py-line"><tt class="py-docstring">        @param task_queue: See L{ExecuteIterator.__init__}.</tt> </tt>
+<a name="L97"></a><tt class="py-lineno"> 97</tt>  <tt class="py-line"><tt class="py-docstring">        @param timeout: See L{TaskDispatcher.execute}.</tt> </tt>
+<a name="L98"></a><tt class="py-lineno"> 98</tt>  <tt class="py-line"><tt class="py-docstring">        '''</tt> </tt>
+<a name="L99"></a><tt class="py-lineno"> 99</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">__task_queue</tt> <tt class="py-op">=</tt> <tt id="link-11" class="py-name" targets="Class Method papyros.distributed.PyroTaskDispatcher.get_proxy()=papyros.distributed.PyroTaskDispatcher-class.html#get_proxy,Function papyros.execute.get_proxy()=papyros.execute-module.html#get_proxy"><a title="papyros.distributed.PyroTaskDispatcher.get_proxy
+papyros.execute.get_proxy" class="py-name" href="#" onclick="return doclink('link-11', 'get_proxy', 'link-11');">get_proxy</a></tt><tt class="py-op">(</tt><tt class="py-name">task_queue</tt><tt class="py-op">)</tt> </tt>
+<a name="L100"></a><tt class="py-lineno">100</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">__timeout</tt> <tt class="py-op">=</tt> <tt class="py-name">timeout</tt> </tt>
+<a name="L101"></a><tt class="py-lineno">101</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">__started</tt> <tt class="py-op">=</tt> <tt class="py-name">False</tt> </tt>
+<a name="L102"></a><tt class="py-lineno">102</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">__finished</tt> <tt class="py-op">=</tt> <tt class="py-name">False</tt> </tt>
+<a name="L103"></a><tt class="py-lineno">103</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">__remaining</tt> <tt class="py-op">=</tt> <tt class="py-number">0</tt> </tt>
+<a name="L104"></a><tt class="py-lineno">104</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">__condition</tt> <tt class="py-op">=</tt> <tt class="py-name">threading</tt><tt class="py-op">.</tt><tt class="py-name">Condition</tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+</div><a name="L105"></a><tt class="py-lineno">105</tt>  <tt class="py-line"> </tt>
+<a name="DefaultTaskExecutioner.next"></a><div id="DefaultTaskExecutioner.next-def"><a name="L106"></a><tt class="py-lineno">106</tt> <a class="py-toggle" href="#" id="DefaultTaskExecutioner.next-toggle" onclick="return toggle('DefaultTaskExecutioner.next');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="papyros.execute.DefaultTaskExecutioner-class.html#next">next</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="DefaultTaskExecutioner.next-collapsed" style="display:none;" pad="+++" indent="++++++++"></div><div id="DefaultTaskExecutioner.next-expanded"><a name="L107"></a><tt class="py-lineno">107</tt>  <tt class="py-line">        <tt class="py-docstring">'''Pop and return a finished result from the L{TaskQueue}.</tt> </tt>
+<a name="L108"></a><tt class="py-lineno">108</tt>  <tt class="py-line"><tt class="py-docstring"></tt> </tt>
+<a name="L109"></a><tt class="py-lineno">109</tt>  <tt class="py-line"><tt class="py-docstring">        @raises TimeoutError: If a L{timeout &lt;__init__&gt;} was specified and it</tt> </tt>
+<a name="L110"></a><tt class="py-lineno">110</tt>  <tt class="py-line"><tt class="py-docstring">            expires before a result is available.</tt> </tt>
+<a name="L111"></a><tt class="py-lineno">111</tt>  <tt class="py-line"><tt class="py-docstring">        '''</tt> </tt>
+<a name="L112"></a><tt class="py-lineno">112</tt>  <tt class="py-line">        <tt class="py-name">condition</tt> <tt class="py-op">=</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">__condition</tt> </tt>
+<a name="L113"></a><tt class="py-lineno">113</tt>  <tt class="py-line">        <tt class="py-keyword">while</tt> <tt class="py-name">True</tt><tt class="py-op">:</tt> </tt>
+<a name="L114"></a><tt class="py-lineno">114</tt>  <tt class="py-line">            <tt class="py-name">condition</tt><tt class="py-op">.</tt><tt class="py-name">acquire</tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+<a name="L115"></a><tt class="py-lineno">115</tt>  <tt class="py-line">            <tt class="py-keyword">try</tt><tt class="py-op">:</tt> </tt>
+<a name="L116"></a><tt class="py-lineno">116</tt>  <tt class="py-line">                <tt class="py-keyword">if</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">__remaining</tt> <tt class="py-op">&gt;</tt> <tt class="py-number">0</tt><tt class="py-op">:</tt> <tt class="py-comment"># there is a pending item; return it</tt> </tt>
+<a name="L117"></a><tt class="py-lineno">117</tt>  <tt class="py-line">                    <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">__remaining</tt> <tt class="py-op">-=</tt> <tt class="py-number">1</tt> </tt>
+<a name="L118"></a><tt class="py-lineno">118</tt>  <tt class="py-line">                    <tt class="py-keyword">break</tt> </tt>
+<a name="L119"></a><tt class="py-lineno">119</tt>  <tt class="py-line">                <tt class="py-keyword">elif</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">__finished</tt><tt class="py-op">:</tt>   <tt class="py-comment"># no pending items and producer is done</tt> </tt>
+<a name="L120"></a><tt class="py-lineno">120</tt>  <tt class="py-line">                    <tt class="py-keyword">raise</tt> <tt class="py-name">StopIteration</tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+<a name="L121"></a><tt class="py-lineno">121</tt>  <tt class="py-line">                <tt class="py-keyword">else</tt><tt class="py-op">:</tt>                   <tt class="py-comment"># no pending items but producer not done</tt> </tt>
+<a name="L122"></a><tt class="py-lineno">122</tt>  <tt class="py-line">                    <tt class="py-name">condition</tt><tt class="py-op">.</tt><tt class="py-name">wait</tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+<a name="L123"></a><tt class="py-lineno">123</tt>  <tt class="py-line">            <tt class="py-keyword">finally</tt><tt class="py-op">:</tt> </tt>
+<a name="L124"></a><tt class="py-lineno">124</tt>  <tt class="py-line">                <tt class="py-name">condition</tt><tt class="py-op">.</tt><tt class="py-name">release</tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+<a name="L125"></a><tt class="py-lineno">125</tt>  <tt class="py-line">        <tt class="py-keyword">return</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">__task_queue</tt><tt class="py-op">.</tt><tt id="link-12" class="py-name" targets="Method papyros.base.TaskQueue.pop()=papyros.base.TaskQueue-class.html#pop"><a title="papyros.base.TaskQueue.pop" class="py-name" href="#" onclick="return doclink('link-12', 'pop', 'link-12');">pop</a></tt><tt class="py-op">(</tt><tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">__timeout</tt><tt class="py-op">)</tt> </tt>
+</div><a name="L126"></a><tt class="py-lineno">126</tt>  <tt class="py-line"> </tt>
+<a name="DefaultTaskExecutioner.submit"></a><div id="DefaultTaskExecutioner.submit-def"><a name="L127"></a><tt class="py-lineno">127</tt> <a class="py-toggle" href="#" id="DefaultTaskExecutioner.submit-toggle" onclick="return toggle('DefaultTaskExecutioner.submit');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="papyros.execute.DefaultTaskExecutioner-class.html#submit">submit</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">,</tt> <tt class="py-param">tasks</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="DefaultTaskExecutioner.submit-collapsed" style="display:none;" pad="+++" indent="++++++++"></div><div id="DefaultTaskExecutioner.submit-expanded"><a name="L128"></a><tt class="py-lineno">128</tt>  <tt class="py-line">        <tt class="py-docstring">'''Starts a new thread for pushing the given tasks to the L{TaskQueue}.'''</tt> </tt>
+<a name="L129"></a><tt class="py-lineno">129</tt>  <tt class="py-line">        <tt class="py-name">condition</tt> <tt class="py-op">=</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">__condition</tt> </tt>
+<a name="L130"></a><tt class="py-lineno">130</tt>  <tt class="py-line">        <tt class="py-keyword">def</tt> <tt class="py-def-name">produce_all</tt><tt class="py-op">(</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+<a name="L131"></a><tt class="py-lineno">131</tt>  <tt class="py-line">            <tt class="py-keyword">try</tt><tt class="py-op">:</tt> </tt>
+<a name="L132"></a><tt class="py-lineno">132</tt>  <tt class="py-line">                <tt class="py-name">produce</tt> <tt class="py-op">=</tt> <tt id="link-13" class="py-name"><a title="papyros.distributed.PyroTaskDispatcher.get_proxy
+papyros.execute.get_proxy" class="py-name" href="#" onclick="return doclink('link-13', 'get_proxy', 'link-11');">get_proxy</a></tt><tt class="py-op">(</tt><tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">__task_queue</tt><tt class="py-op">)</tt><tt class="py-op">.</tt><tt id="link-14" class="py-name" targets="Method papyros.base.TaskQueue.push()=papyros.base.TaskQueue-class.html#push"><a title="papyros.base.TaskQueue.push" class="py-name" href="#" onclick="return doclink('link-14', 'push', 'link-14');">push</a></tt> </tt>
+<a name="L133"></a><tt class="py-lineno">133</tt>  <tt class="py-line">                <tt class="py-keyword">for</tt> <tt id="link-15" class="py-name"><a title="papyros.task" class="py-name" href="#" onclick="return doclink('link-15', 'task', 'link-1');">task</a></tt> <tt class="py-keyword">in</tt> <tt class="py-name">tasks</tt><tt class="py-op">:</tt> </tt>
+<a name="L134"></a><tt class="py-lineno">134</tt>  <tt class="py-line">                    <tt class="py-name">condition</tt><tt class="py-op">.</tt><tt class="py-name">acquire</tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+<a name="L135"></a><tt class="py-lineno">135</tt>  <tt class="py-line">                    <tt class="py-keyword">try</tt><tt class="py-op">:</tt> </tt>
+<a name="L136"></a><tt class="py-lineno">136</tt>  <tt class="py-line">                        <tt class="py-keyword">if</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">__finished</tt><tt class="py-op">:</tt> <tt class="py-keyword">break</tt> </tt>
+<a name="L137"></a><tt class="py-lineno">137</tt>  <tt class="py-line">                        <tt class="py-name">produce</tt><tt class="py-op">(</tt><tt id="link-16" class="py-name"><a title="papyros.task" class="py-name" href="#" onclick="return doclink('link-16', 'task', 'link-1');">task</a></tt><tt class="py-op">)</tt> </tt>
+<a name="L138"></a><tt class="py-lineno">138</tt>  <tt class="py-line">                        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">__remaining</tt> <tt class="py-op">+=</tt> <tt class="py-number">1</tt> </tt>
+<a name="L139"></a><tt class="py-lineno">139</tt>  <tt class="py-line">                        <tt class="py-name">condition</tt><tt class="py-op">.</tt><tt class="py-name">notify</tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+<a name="L140"></a><tt class="py-lineno">140</tt>  <tt class="py-line">                    <tt class="py-keyword">finally</tt><tt class="py-op">:</tt> </tt>
+<a name="L141"></a><tt class="py-lineno">141</tt>  <tt class="py-line">                        <tt class="py-name">condition</tt><tt class="py-op">.</tt><tt class="py-name">release</tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+<a name="L142"></a><tt class="py-lineno">142</tt>  <tt class="py-line">            <tt class="py-keyword">finally</tt><tt class="py-op">:</tt> </tt>
+<a name="L143"></a><tt class="py-lineno">143</tt>  <tt class="py-line">                <tt class="py-name">self</tt><tt class="py-op">.</tt><tt id="link-17" class="py-name" targets="Method papyros.execute.DefaultTaskExecutioner.__abort()=papyros.execute.DefaultTaskExecutioner-class.html#__abort"><a title="papyros.execute.DefaultTaskExecutioner.__abort" class="py-name" href="#" onclick="return doclink('link-17', '__abort', 'link-17');">__abort</a></tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+</div><a name="L144"></a><tt class="py-lineno">144</tt>  <tt class="py-line">        <tt class="py-name">condition</tt><tt class="py-op">.</tt><tt class="py-name">acquire</tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+<a name="L145"></a><tt class="py-lineno">145</tt>  <tt class="py-line">        <tt class="py-keyword">try</tt><tt class="py-op">:</tt> </tt>
+<a name="L146"></a><tt class="py-lineno">146</tt>  <tt class="py-line">            <tt class="py-keyword">if</tt> <tt class="py-keyword">not</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">__started</tt><tt class="py-op">:</tt> </tt>
+<a name="L147"></a><tt class="py-lineno">147</tt>  <tt class="py-line">                <tt class="py-name">producer</tt> <tt class="py-op">=</tt> <tt class="py-name">threading</tt><tt class="py-op">.</tt><tt class="py-name">Thread</tt><tt class="py-op">(</tt><tt class="py-name">target</tt><tt class="py-op">=</tt><tt class="py-name">produce_all</tt><tt class="py-op">)</tt> </tt>
+<a name="L148"></a><tt class="py-lineno">148</tt>  <tt class="py-line">                <tt class="py-name">producer</tt><tt class="py-op">.</tt><tt class="py-name">setDaemon</tt><tt class="py-op">(</tt><tt class="py-name">True</tt><tt class="py-op">)</tt> </tt>
+<a name="L149"></a><tt class="py-lineno">149</tt>  <tt class="py-line">                <tt class="py-name">producer</tt><tt class="py-op">.</tt><tt class="py-name">start</tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+<a name="L150"></a><tt class="py-lineno">150</tt>  <tt class="py-line">                <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">__started</tt> <tt class="py-op">=</tt> <tt class="py-name">True</tt> </tt>
+<a name="L151"></a><tt class="py-lineno">151</tt>  <tt class="py-line">        <tt class="py-keyword">finally</tt><tt class="py-op">:</tt> </tt>
+<a name="L152"></a><tt class="py-lineno">152</tt>  <tt class="py-line">            <tt class="py-name">condition</tt><tt class="py-op">.</tt><tt class="py-name">release</tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+</div><a name="L153"></a><tt class="py-lineno">153</tt>  <tt class="py-line"> </tt>
+<a name="DefaultTaskExecutioner.close"></a><div id="DefaultTaskExecutioner.close-def"><a name="L154"></a><tt class="py-lineno">154</tt> <a class="py-toggle" href="#" id="DefaultTaskExecutioner.close-toggle" onclick="return toggle('DefaultTaskExecutioner.close');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="papyros.execute.DefaultTaskExecutioner-class.html#close">close</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="DefaultTaskExecutioner.close-collapsed" style="display:none;" pad="+++" indent="++++++++"></div><div id="DefaultTaskExecutioner.close-expanded"><a name="L155"></a><tt class="py-lineno">155</tt>  <tt class="py-line">        <tt class="py-docstring">'''Cancels the submission of any still unsubmitted task and closes the</tt> </tt>
+<a name="L156"></a><tt class="py-lineno">156</tt>  <tt class="py-line"><tt class="py-docstring">        L{TaskQueue}.</tt> </tt>
+<a name="L157"></a><tt class="py-lineno">157</tt>  <tt class="py-line"><tt class="py-docstring">        '''</tt> </tt>
+<a name="L158"></a><tt class="py-lineno">158</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt id="link-18" class="py-name"><a title="papyros.execute.DefaultTaskExecutioner.__abort" class="py-name" href="#" onclick="return doclink('link-18', '__abort', 'link-17');">__abort</a></tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+<a name="L159"></a><tt class="py-lineno">159</tt>  <tt class="py-line">        <tt class="py-comment"># call task_queue.close() through a new proxy just to be on the safe</tt> </tt>
+<a name="L160"></a><tt class="py-lineno">160</tt>  <tt class="py-line"><tt class="py-comment"></tt>        <tt class="py-comment"># side since __del__ might be called from a different thread. Also guard</tt> </tt>
+<a name="L161"></a><tt class="py-lineno">161</tt>  <tt class="py-line"><tt class="py-comment"></tt>        <tt class="py-comment"># from exceptions since the queue might be gone already</tt> </tt>
+<a name="L162"></a><tt class="py-lineno">162</tt>  <tt class="py-line"><tt class="py-comment"></tt>        <tt class="py-keyword">try</tt><tt class="py-op">:</tt> <tt id="link-19" class="py-name"><a title="papyros.distributed.PyroTaskDispatcher.get_proxy
+papyros.execute.get_proxy" class="py-name" href="#" onclick="return doclink('link-19', 'get_proxy', 'link-11');">get_proxy</a></tt><tt class="py-op">(</tt><tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">__task_queue</tt><tt class="py-op">)</tt><tt class="py-op">.</tt><tt id="link-20" class="py-name"><a title="papyros.base.TaskDispatcher.close
+papyros.base.TaskQueue.close
+papyros.distributed.PyroTaskDispatcherProxy.close
+papyros.distributed.PyroTaskQueue.close
+papyros.distributed.PyroTaskQueueProxy.close
+papyros.execute.DefaultTaskExecutioner.close
+papyros.execute.ExecuteIterator.close
+papyros.execute.TaskExecutionDecorator.close
+papyros.execute.TaskExecutioner.close" class="py-name" href="#" onclick="return doclink('link-20', 'close', 'link-9');">close</a></tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+<a name="L163"></a><tt class="py-lineno">163</tt>  <tt class="py-line">        <tt class="py-keyword">except</tt><tt class="py-op">:</tt> <tt class="py-keyword">pass</tt> </tt>
+</div><a name="L164"></a><tt class="py-lineno">164</tt>  <tt class="py-line"> </tt>
+<a name="DefaultTaskExecutioner.__abort"></a><div id="DefaultTaskExecutioner.__abort-def"><a name="L165"></a><tt class="py-lineno">165</tt> <a class="py-toggle" href="#" id="DefaultTaskExecutioner.__abort-toggle" onclick="return toggle('DefaultTaskExecutioner.__abort');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="papyros.execute.DefaultTaskExecutioner-class.html#__abort">__abort</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="DefaultTaskExecutioner.__abort-collapsed" style="display:none;" pad="+++" indent="++++++++"></div><div id="DefaultTaskExecutioner.__abort-expanded"><a name="L166"></a><tt class="py-lineno">166</tt>  <tt class="py-line">        <tt class="py-docstring">'''Declares that no more tasks are going to be submitted.'''</tt> </tt>
+<a name="L167"></a><tt class="py-lineno">167</tt>  <tt class="py-line">        <tt class="py-keyword">if</tt> <tt class="py-keyword">not</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">__finished</tt><tt class="py-op">:</tt> </tt>
+<a name="L168"></a><tt class="py-lineno">168</tt>  <tt class="py-line">            <tt class="py-name">condition</tt> <tt class="py-op">=</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">__condition</tt> </tt>
+<a name="L169"></a><tt class="py-lineno">169</tt>  <tt class="py-line">            <tt class="py-name">condition</tt><tt class="py-op">.</tt><tt class="py-name">acquire</tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+<a name="L170"></a><tt class="py-lineno">170</tt>  <tt class="py-line">            <tt class="py-keyword">try</tt><tt class="py-op">:</tt> </tt>
+<a name="L171"></a><tt class="py-lineno">171</tt>  <tt class="py-line">                <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">__finished</tt> <tt class="py-op">=</tt> <tt class="py-name">True</tt> </tt>
+<a name="L172"></a><tt class="py-lineno">172</tt>  <tt class="py-line">                <tt class="py-name">condition</tt><tt class="py-op">.</tt><tt class="py-name">notifyAll</tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+<a name="L173"></a><tt class="py-lineno">173</tt>  <tt class="py-line">            <tt class="py-keyword">finally</tt><tt class="py-op">:</tt> </tt>
+<a name="L174"></a><tt class="py-lineno">174</tt>  <tt class="py-line">                <tt class="py-name">condition</tt><tt class="py-op">.</tt><tt class="py-name">release</tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+</div></div><a name="L175"></a><tt class="py-lineno">175</tt>  <tt class="py-line"> </tt>
+<a name="L176"></a><tt class="py-lineno">176</tt>  <tt class="py-line"><tt class="py-comment">#========== TaskExecutionDecorator =============================================</tt> </tt>
+<a name="L177"></a><tt class="py-lineno">177</tt>  <tt class="py-line"><tt class="py-comment"></tt> </tt>
+<a name="TaskExecutionDecorator"></a><div id="TaskExecutionDecorator-def"><a name="L178"></a><tt class="py-lineno">178</tt> <a class="py-toggle" href="#" id="TaskExecutionDecorator-toggle" onclick="return toggle('TaskExecutionDecorator');">-</a><tt class="py-line"><tt class="py-keyword">class</tt> <a class="py-def-name" href="papyros.execute.TaskExecutionDecorator-class.html">TaskExecutionDecorator</a><tt class="py-op">(</tt><tt class="py-base-class">TaskExecutioner</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="TaskExecutionDecorator-collapsed" style="display:none;" pad="+++" indent="++++"></div><div id="TaskExecutionDecorator-expanded"><a name="L179"></a><tt class="py-lineno">179</tt>  <tt class="py-line">    <tt class="py-docstring">'''Implements the decorator pattern for L{TaskExecutioner}s.</tt> </tt>
+<a name="L180"></a><tt class="py-lineno">180</tt>  <tt class="py-line"><tt class="py-docstring"></tt> </tt>
+<a name="L181"></a><tt class="py-lineno">181</tt>  <tt class="py-line"><tt class="py-docstring">    This class delegates all calls to the decorated component.</tt> </tt>
+<a name="L182"></a><tt class="py-lineno">182</tt>  <tt class="py-line"><tt class="py-docstring">    '''</tt> </tt>
+<a name="TaskExecutionDecorator.__init__"></a><div id="TaskExecutionDecorator.__init__-def"><a name="L183"></a><tt class="py-lineno">183</tt> <a class="py-toggle" href="#" id="TaskExecutionDecorator.__init__-toggle" onclick="return toggle('TaskExecutionDecorator.__init__');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="papyros.execute.TaskExecutionDecorator-class.html#__init__">__init__</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">,</tt> <tt class="py-param">executioner</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">__decorated</tt> <tt class="py-op">=</tt> <tt class="py-name">executioner</tt> </tt>
+</div><a name="TaskExecutionDecorator.next"></a><div id="TaskExecutionDecorator.next-def"><a name="L184"></a><tt class="py-lineno">184</tt> <a class="py-toggle" href="#" id="TaskExecutionDecorator.next-toggle" onclick="return toggle('TaskExecutionDecorator.next');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="papyros.execute.TaskExecutionDecorator-class.html#next">next</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> <tt class="py-keyword">return</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">__decorated</tt><tt class="py-op">.</tt><tt id="link-21" class="py-name"><a title="papyros.execute.CompositeExecutionDecorator.next
+papyros.execute.DefaultTaskExecutioner.next
+papyros.execute.ExecuteIterator.next
+papyros.execute.OrderedExecutionDecorator.next
+papyros.execute.TaskExecutionDecorator.next
+papyros.execute.TaskExecutioner.next" class="py-name" href="#" onclick="return doclink('link-21', 'next', 'link-8');">next</a></tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+</div><a name="TaskExecutionDecorator.adapt_tasks"></a><div id="TaskExecutionDecorator.adapt_tasks-def"><a name="L185"></a><tt class="py-lineno">185</tt> <a class="py-toggle" href="#" id="TaskExecutionDecorator.adapt_tasks-toggle" onclick="return toggle('TaskExecutionDecorator.adapt_tasks');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="papyros.execute.TaskExecutionDecorator-class.html#adapt_tasks">adapt_tasks</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">,</tt> <tt class="py-param">tasks</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> <tt class="py-keyword">return</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">__decorated</tt><tt class="py-op">.</tt><tt id="link-22" class="py-name"><a title="papyros.execute.CompositeExecutionDecorator.adapt_tasks
+papyros.execute.OrderedExecutionDecorator.adapt_tasks
+papyros.execute.TaskExecutionDecorator.adapt_tasks
+papyros.execute.TaskExecutioner.adapt_tasks" class="py-name" href="#" onclick="return doclink('link-22', 'adapt_tasks', 'link-7');">adapt_tasks</a></tt><tt class="py-op">(</tt><tt class="py-name">tasks</tt><tt class="py-op">)</tt> </tt>
+</div><a name="TaskExecutionDecorator.close"></a><div id="TaskExecutionDecorator.close-def"><a name="L186"></a><tt class="py-lineno">186</tt> <a class="py-toggle" href="#" id="TaskExecutionDecorator.close-toggle" onclick="return toggle('TaskExecutionDecorator.close');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="papyros.execute.TaskExecutionDecorator-class.html#close">close</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> <tt class="py-keyword">return</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">__decorated</tt><tt class="py-op">.</tt><tt id="link-23" class="py-name"><a title="papyros.base.TaskDispatcher.close
+papyros.base.TaskQueue.close
+papyros.distributed.PyroTaskDispatcherProxy.close
+papyros.distributed.PyroTaskQueue.close
+papyros.distributed.PyroTaskQueueProxy.close
+papyros.execute.DefaultTaskExecutioner.close
+papyros.execute.ExecuteIterator.close
+papyros.execute.TaskExecutionDecorator.close
+papyros.execute.TaskExecutioner.close" class="py-name" href="#" onclick="return doclink('link-23', 'close', 'link-9');">close</a></tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+</div><a name="TaskExecutionDecorator.submit"></a><div id="TaskExecutionDecorator.submit-def"><a name="L187"></a><tt class="py-lineno">187</tt> <a class="py-toggle" href="#" id="TaskExecutionDecorator.submit-toggle" onclick="return toggle('TaskExecutionDecorator.submit');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="papyros.execute.TaskExecutionDecorator-class.html#submit">submit</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">,</tt> <tt class="py-param">tasks</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> <tt class="py-keyword">return</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">__decorated</tt><tt class="py-op">.</tt><tt id="link-24" class="py-name"><a title="papyros.execute.DefaultTaskExecutioner.submit
+papyros.execute.TaskExecutionDecorator.submit
+papyros.execute.TaskExecutioner.submit" class="py-name" href="#" onclick="return doclink('link-24', 'submit', 'link-6');">submit</a></tt><tt class="py-op">(</tt><tt class="py-name">tasks</tt><tt class="py-op">)</tt> </tt>
+</div></div><a name="L188"></a><tt class="py-lineno">188</tt>  <tt class="py-line"> </tt>
+<a name="L189"></a><tt class="py-lineno">189</tt>  <tt class="py-line"><tt class="py-comment">#========== OrderedExecutionDecorator ==========================================</tt> </tt>
+<a name="L190"></a><tt class="py-lineno">190</tt>  <tt class="py-line"><tt class="py-comment"></tt> </tt>
+<a name="L191"></a><tt class="py-lineno">191</tt>  <tt class="py-line"><tt class="py-decorator">@</tt><tt class="py-decorator">Task</tt><tt class="py-op">.</tt><tt id="link-25" class="py-name" targets="Class Method papyros.task.Task.subclass()=papyros.task.Task-class.html#subclass"><a title="papyros.task.Task.subclass" class="py-name" href="#" onclick="return doclink('link-25', 'subclass', 'link-25');">subclass</a></tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+<a name="IndexedTask"></a><div id="IndexedTask-def"><a name="L192"></a><tt class="py-lineno">192</tt> <a class="py-toggle" href="#" id="IndexedTask-toggle" onclick="return toggle('IndexedTask');">-</a><tt class="py-line"><tt class="py-keyword">def</tt> <a class="py-def-name" href="papyros.execute-module.html#IndexedTask">IndexedTask</a><tt class="py-op">(</tt><tt class="py-param">index</tt><tt class="py-op">,</tt> <tt class="py-param">task</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="IndexedTask-collapsed" style="display:none;" pad="+++" indent="++++"></div><div id="IndexedTask-expanded"><a name="L193"></a><tt class="py-lineno">193</tt>  <tt class="py-line">    <tt class="py-docstring">'''A task associated with an index.'''</tt> </tt>
+<a name="L194"></a><tt class="py-lineno">194</tt>  <tt class="py-line">    <tt id="link-26" class="py-name"><a title="papyros.task" class="py-name" href="#" onclick="return doclink('link-26', 'task', 'link-1');">task</a></tt><tt class="py-op">.</tt><tt id="link-27" class="py-name" targets="Method papyros.base.TaskDispatcher.execute()=papyros.base.TaskDispatcher-class.html#execute,Module papyros.execute=papyros.execute-module.html,Method papyros.task.Task.execute()=papyros.task.Task-class.html#execute"><a title="papyros.base.TaskDispatcher.execute
+papyros.execute
+papyros.task.Task.execute" class="py-name" href="#" onclick="return doclink('link-27', 'execute', 'link-27');">execute</a></tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+<a name="L195"></a><tt class="py-lineno">195</tt>  <tt class="py-line">    <tt class="py-keyword">return</tt> <tt class="py-op">(</tt><tt class="py-name">index</tt><tt class="py-op">,</tt> <tt id="link-28" class="py-name"><a title="papyros.task" class="py-name" href="#" onclick="return doclink('link-28', 'task', 'link-1');">task</a></tt><tt class="py-op">)</tt> </tt>
+</div><a name="L196"></a><tt class="py-lineno">196</tt>  <tt class="py-line"> </tt>
+<a name="OrderedExecutionDecorator"></a><div id="OrderedExecutionDecorator-def"><a name="L197"></a><tt class="py-lineno">197</tt> <a class="py-toggle" href="#" id="OrderedExecutionDecorator-toggle" onclick="return toggle('OrderedExecutionDecorator');">-</a><tt class="py-line"><tt class="py-keyword">class</tt> <a class="py-def-name" href="papyros.execute.OrderedExecutionDecorator-class.html">OrderedExecutionDecorator</a><tt class="py-op">(</tt><tt class="py-base-class">TaskExecutionDecorator</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="OrderedExecutionDecorator-collapsed" style="display:none;" pad="+++" indent="++++"></div><div id="OrderedExecutionDecorator-expanded"><a name="L198"></a><tt class="py-lineno">198</tt>  <tt class="py-line">    <tt class="py-docstring">'''Decorates a L{TaskExecutioner} so that it yields results in the same order</tt> </tt>
+<a name="L199"></a><tt class="py-lineno">199</tt>  <tt class="py-line"><tt class="py-docstring">    the respective tasks were submitted.</tt> </tt>
+<a name="L200"></a><tt class="py-lineno">200</tt>  <tt class="py-line"><tt class="py-docstring">    '''</tt> </tt>
+<a name="L201"></a><tt class="py-lineno">201</tt>  <tt class="py-line"> </tt>
+<a name="OrderedExecutionDecorator.__init__"></a><div id="OrderedExecutionDecorator.__init__-def"><a name="L202"></a><tt class="py-lineno">202</tt> <a class="py-toggle" href="#" id="OrderedExecutionDecorator.__init__-toggle" onclick="return toggle('OrderedExecutionDecorator.__init__');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="papyros.execute.OrderedExecutionDecorator-class.html#__init__">__init__</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">,</tt> <tt class="py-param">executioner</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="OrderedExecutionDecorator.__init__-collapsed" style="display:none;" pad="+++" indent="++++++++"></div><div id="OrderedExecutionDecorator.__init__-expanded"><a name="L203"></a><tt class="py-lineno">203</tt>  <tt class="py-line">        <tt class="py-name">super</tt><tt class="py-op">(</tt><tt id="link-29" class="py-name"><a title="papyros.execute.OrderedExecutionDecorator" class="py-name" href="#" onclick="return doclink('link-29', 'OrderedExecutionDecorator', 'link-5');">OrderedExecutionDecorator</a></tt><tt class="py-op">,</tt><tt class="py-name">self</tt><tt class="py-op">)</tt><tt class="py-op">.</tt><tt id="link-30" class="py-name" targets="Method papyros.base.TaskDispatcher.__init__()=papyros.base.TaskDispatcher-class.html#__init__,Method papyros.base.TaskQueue.__init__()=papyros.base.TaskQueue-class.html#__init__,Method papyros.base.Worker.__init__()=papyros.base.Worker-class.html#__init__,Method papyros.distributed.PyroTaskDispatcher.__init__()=papyros.distributed.PyroTaskDispatcher-class.html#__init__,Method papyros.distributed.PyroTaskQueue.__init__()=papyros.distributed.PyroTaskQueue-class.html#__init__,Method papyros.distributed.PyroWorker.__init__()=papyros.distributed.PyroWorker-class.html#__init__,Method papyros.dummy.DummyTaskDispatcher.__init__()=papyros.dummy.DummyTaskDispatcher-class.html#__init__,Method papyros.execute.CompositeExecutionDecorator.__init__()=papyros.execute.CompositeExecutionDecorator-class.html#__init__,Method papyros.execute.DefaultTaskExecutioner.__init__()=papyros.execute.DefaultTaskExecutioner-class.html#__init__,Method papyros.execute.ExecuteIterator.__init__()=papyros.execute.ExecuteIterator-class.html#__init__,Method papyros.execute.OrderedExecutionDecorator.__init__()=papyros.execute.OrderedExecutionDecorator-class.html#__init__,Method papyros.execute.TaskExecutionDecorator.__init__()=papyros.execute.TaskExecutionDecorator-class.html#__init__,Method papyros.multithreaded.MultiThreadedTaskDispatcher.__init__()=papyros.multithreaded.MultiThreadedTaskDispatcher-class.html#__init__,Method papyros.multithreaded.MultiThreadedWorker.__init__()=papyros.multithreaded.MultiThreadedWorker-class.html#__init__,Method papyros.task.Task.__init__()=papyros.task.Task-class.html#__init__"><a title="papyros.base.TaskDispatcher.__init__
+papyros.base.TaskQueue.__init__
+papyros.base.Worker.__init__
+papyros.distributed.PyroTaskDispatcher.__init__
+papyros.distributed.PyroTaskQueue.__init__
+papyros.distributed.PyroWorker.__init__
+papyros.dummy.DummyTaskDispatcher.__init__
+papyros.execute.CompositeExecutionDecorator.__init__
+papyros.execute.DefaultTaskExecutioner.__init__
+papyros.execute.ExecuteIterator.__init__
+papyros.execute.OrderedExecutionDecorator.__init__
+papyros.execute.TaskExecutionDecorator.__init__
+papyros.multithreaded.MultiThreadedTaskDispatcher.__init__
+papyros.multithreaded.MultiThreadedWorker.__init__
+papyros.task.Task.__init__" class="py-name" href="#" onclick="return doclink('link-30', '__init__', 'link-30');">__init__</a></tt><tt class="py-op">(</tt><tt class="py-name">executioner</tt><tt class="py-op">)</tt> </tt>
+<a name="L204"></a><tt class="py-lineno">204</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">__index</tt> <tt class="py-op">=</tt> <tt class="py-number">0</tt>     <tt class="py-comment"># index of the next task to be yielded by next</tt> </tt>
+<a name="L205"></a><tt class="py-lineno">205</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">__pending</tt> <tt class="py-op">=</tt> <tt class="py-op">[</tt><tt class="py-op">]</tt>  <tt class="py-comment"># heap of the returned (index, task) tuples</tt> </tt>
+</div><a name="L206"></a><tt class="py-lineno">206</tt>  <tt class="py-line"> </tt>
+<a name="OrderedExecutionDecorator.adapt_tasks"></a><div id="OrderedExecutionDecorator.adapt_tasks-def"><a name="L207"></a><tt class="py-lineno">207</tt> <a class="py-toggle" href="#" id="OrderedExecutionDecorator.adapt_tasks-toggle" onclick="return toggle('OrderedExecutionDecorator.adapt_tasks');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="papyros.execute.OrderedExecutionDecorator-class.html#adapt_tasks">adapt_tasks</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">,</tt> <tt class="py-param">tasks</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="OrderedExecutionDecorator.adapt_tasks-collapsed" style="display:none;" pad="+++" indent="++++++++"></div><div id="OrderedExecutionDecorator.adapt_tasks-expanded"><a name="L208"></a><tt class="py-lineno">208</tt>  <tt class="py-line">        <tt class="py-docstring">'''Wrap tasks as L{IndexedTask}s and pass them to the</tt> </tt>
+<a name="L209"></a><tt class="py-lineno">209</tt>  <tt class="py-line"><tt class="py-docstring">        L{adapt_tasks &lt;TaskExecutioner.adapt_tasks&gt;} of the decorated component.</tt> </tt>
+<a name="L210"></a><tt class="py-lineno">210</tt>  <tt class="py-line"><tt class="py-docstring">        '''</tt> </tt>
+<a name="L211"></a><tt class="py-lineno">211</tt>  <tt class="py-line">        <tt class="py-name">indexed_tasks</tt> <tt class="py-op">=</tt> <tt class="py-name">starmap</tt><tt class="py-op">(</tt><tt id="link-31" class="py-name" targets="Class papyros.execute.IndexedTask=papyros.execute.IndexedTask-class.html"><a title="papyros.execute.IndexedTask" class="py-name" href="#" onclick="return doclink('link-31', 'IndexedTask', 'link-31');">IndexedTask</a></tt><tt class="py-op">,</tt> <tt class="py-name">enumerate</tt><tt class="py-op">(</tt><tt class="py-name">tasks</tt><tt class="py-op">)</tt><tt class="py-op">)</tt> </tt>
+<a name="L212"></a><tt class="py-lineno">212</tt>  <tt class="py-line">        <tt class="py-keyword">return</tt> <tt class="py-name">super</tt><tt class="py-op">(</tt><tt id="link-32" class="py-name"><a title="papyros.execute.OrderedExecutionDecorator" class="py-name" href="#" onclick="return doclink('link-32', 'OrderedExecutionDecorator', 'link-5');">OrderedExecutionDecorator</a></tt><tt class="py-op">,</tt><tt class="py-name">self</tt><tt class="py-op">)</tt><tt class="py-op">.</tt><tt id="link-33" class="py-name"><a title="papyros.execute.CompositeExecutionDecorator.adapt_tasks
+papyros.execute.OrderedExecutionDecorator.adapt_tasks
+papyros.execute.TaskExecutionDecorator.adapt_tasks
+papyros.execute.TaskExecutioner.adapt_tasks" class="py-name" href="#" onclick="return doclink('link-33', 'adapt_tasks', 'link-7');">adapt_tasks</a></tt><tt class="py-op">(</tt><tt class="py-name">indexed_tasks</tt><tt class="py-op">)</tt> </tt>
+</div><a name="L213"></a><tt class="py-lineno">213</tt>  <tt class="py-line"> </tt>
+<a name="OrderedExecutionDecorator.next"></a><div id="OrderedExecutionDecorator.next-def"><a name="L214"></a><tt class="py-lineno">214</tt> <a class="py-toggle" href="#" id="OrderedExecutionDecorator.next-toggle" onclick="return toggle('OrderedExecutionDecorator.next');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="papyros.execute.OrderedExecutionDecorator-class.html#next">next</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="OrderedExecutionDecorator.next-collapsed" style="display:none;" pad="+++" indent="++++++++"></div><div id="OrderedExecutionDecorator.next-expanded"><a name="L215"></a><tt class="py-lineno">215</tt>  <tt class="py-line">        <tt class="py-name">heappush</tt> <tt class="py-op">=</tt> <tt class="py-name">heapq</tt><tt class="py-op">.</tt><tt class="py-name">heappush</tt> </tt>
+<a name="L216"></a><tt class="py-lineno">216</tt>  <tt class="py-line">        <tt class="py-name">pending</tt><tt class="py-op">,</tt> <tt class="py-name">index</tt> <tt class="py-op">=</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">__pending</tt><tt class="py-op">,</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">__index</tt> </tt>
+<a name="L217"></a><tt class="py-lineno">217</tt>  <tt class="py-line">        <tt class="py-name">supernext</tt> <tt class="py-op">=</tt> <tt class="py-name">super</tt><tt class="py-op">(</tt><tt id="link-34" class="py-name"><a title="papyros.execute.OrderedExecutionDecorator" class="py-name" href="#" onclick="return doclink('link-34', 'OrderedExecutionDecorator', 'link-5');">OrderedExecutionDecorator</a></tt><tt class="py-op">,</tt><tt class="py-name">self</tt><tt class="py-op">)</tt><tt class="py-op">.</tt><tt id="link-35" class="py-name"><a title="papyros.execute.CompositeExecutionDecorator.next
+papyros.execute.DefaultTaskExecutioner.next
+papyros.execute.ExecuteIterator.next
+papyros.execute.OrderedExecutionDecorator.next
+papyros.execute.TaskExecutionDecorator.next
+papyros.execute.TaskExecutioner.next" class="py-name" href="#" onclick="return doclink('link-35', 'next', 'link-8');">next</a></tt> </tt>
+<a name="L218"></a><tt class="py-lineno">218</tt>  <tt class="py-line">        <tt class="py-keyword">while</tt> <tt class="py-keyword">not</tt> <tt class="py-name">pending</tt> <tt class="py-keyword">or</tt> <tt class="py-name">pending</tt><tt class="py-op">[</tt><tt class="py-number">0</tt><tt class="py-op">]</tt><tt class="py-op">[</tt><tt class="py-number">0</tt><tt class="py-op">]</tt> <tt class="py-op">&gt;</tt> <tt class="py-name">index</tt><tt class="py-op">:</tt> </tt>
+<a name="L219"></a><tt class="py-lineno">219</tt>  <tt class="py-line">            <tt class="py-keyword">try</tt><tt class="py-op">:</tt> <tt class="py-name">heappush</tt><tt class="py-op">(</tt><tt class="py-name">pending</tt><tt class="py-op">,</tt> <tt class="py-name">supernext</tt><tt class="py-op">(</tt><tt class="py-op">)</tt><tt class="py-op">)</tt> </tt>
+<a name="L220"></a><tt class="py-lineno">220</tt>  <tt class="py-line">            <tt class="py-keyword">except</tt> <tt class="py-name">StopIteration</tt><tt class="py-op">:</tt> <tt class="py-keyword">break</tt> </tt>
+<a name="L221"></a><tt class="py-lineno">221</tt>  <tt class="py-line">        <tt class="py-keyword">if</tt> <tt class="py-name">pending</tt><tt class="py-op">:</tt> </tt>
+<a name="L222"></a><tt class="py-lineno">222</tt>  <tt class="py-line">            <tt class="py-keyword">assert</tt> <tt class="py-name">pending</tt><tt class="py-op">[</tt><tt class="py-number">0</tt><tt class="py-op">]</tt><tt class="py-op">[</tt><tt class="py-number">0</tt><tt class="py-op">]</tt> <tt class="py-op">==</tt> <tt class="py-name">index</tt><tt class="py-op">,</tt> <tt class="py-name">pending</tt> </tt>
+<a name="L223"></a><tt class="py-lineno">223</tt>  <tt class="py-line">            <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">__index</tt> <tt class="py-op">+=</tt> <tt class="py-number">1</tt> </tt>
+<a name="L224"></a><tt class="py-lineno">224</tt>  <tt class="py-line">            <tt class="py-keyword">return</tt> <tt class="py-name">heapq</tt><tt class="py-op">.</tt><tt class="py-name">heappop</tt><tt class="py-op">(</tt><tt class="py-name">pending</tt><tt class="py-op">)</tt><tt class="py-op">[</tt><tt class="py-number">1</tt><tt class="py-op">]</tt><tt class="py-op">.</tt><tt id="link-36" class="py-name" targets="Method papyros.task.Task.result()=papyros.task.Task-class.html#result"><a title="papyros.task.Task.result" class="py-name" href="#" onclick="return doclink('link-36', 'result', 'link-36');">result</a></tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+<a name="L225"></a><tt class="py-lineno">225</tt>  <tt class="py-line">        <tt class="py-keyword">else</tt><tt class="py-op">:</tt> </tt>
+<a name="L226"></a><tt class="py-lineno">226</tt>  <tt class="py-line">            <tt class="py-keyword">raise</tt> <tt class="py-name">StopIteration</tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+</div></div><a name="L227"></a><tt class="py-lineno">227</tt>  <tt class="py-line"> </tt>
+<a name="L228"></a><tt class="py-lineno">228</tt>  <tt class="py-line"><tt class="py-comment">#========== CompositeExecutionDecorator ========================================</tt> </tt>
+<a name="L229"></a><tt class="py-lineno">229</tt>  <tt class="py-line"><tt class="py-comment"></tt> </tt>
+<a name="L230"></a><tt class="py-lineno">230</tt>  <tt class="py-line"><tt class="py-decorator">@</tt><tt class="py-decorator">Task</tt><tt class="py-op">.</tt><tt id="link-37" class="py-name"><a title="papyros.task.Task.subclass" class="py-name" href="#" onclick="return doclink('link-37', 'subclass', 'link-25');">subclass</a></tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+<a name="CompositeTask"></a><div id="CompositeTask-def"><a name="L231"></a><tt class="py-lineno">231</tt> <a class="py-toggle" href="#" id="CompositeTask-toggle" onclick="return toggle('CompositeTask');">-</a><tt class="py-line"><tt class="py-keyword">def</tt> <a class="py-def-name" href="papyros.execute-module.html#CompositeTask">CompositeTask</a><tt class="py-op">(</tt><tt class="py-param">tasks</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="CompositeTask-collapsed" style="display:none;" pad="+++" indent="++++"></div><div id="CompositeTask-expanded"><a name="L232"></a><tt class="py-lineno">232</tt>  <tt class="py-line">    <tt class="py-docstring">'''A task composed of other subtasks.'''</tt> </tt>
+<a name="L233"></a><tt class="py-lineno">233</tt>  <tt class="py-line">    <tt class="py-keyword">for</tt> <tt id="link-38" class="py-name"><a title="papyros.task" class="py-name" href="#" onclick="return doclink('link-38', 'task', 'link-1');">task</a></tt> <tt class="py-keyword">in</tt> <tt class="py-name">tasks</tt><tt class="py-op">:</tt> <tt id="link-39" class="py-name"><a title="papyros.task" class="py-name" href="#" onclick="return doclink('link-39', 'task', 'link-1');">task</a></tt><tt class="py-op">.</tt><tt id="link-40" class="py-name"><a title="papyros.base.TaskDispatcher.execute
+papyros.execute
+papyros.task.Task.execute" class="py-name" href="#" onclick="return doclink('link-40', 'execute', 'link-27');">execute</a></tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+<a name="L234"></a><tt class="py-lineno">234</tt>  <tt class="py-line">    <tt class="py-keyword">return</tt> <tt class="py-name">tasks</tt> </tt>
+</div><a name="L235"></a><tt class="py-lineno">235</tt>  <tt class="py-line"> </tt>
+<a name="CompositeExecutionDecorator"></a><div id="CompositeExecutionDecorator-def"><a name="L236"></a><tt class="py-lineno">236</tt> <a class="py-toggle" href="#" id="CompositeExecutionDecorator-toggle" onclick="return toggle('CompositeExecutionDecorator');">-</a><tt class="py-line"><tt class="py-keyword">class</tt> <a class="py-def-name" href="papyros.execute.CompositeExecutionDecorator-class.html">CompositeExecutionDecorator</a><tt class="py-op">(</tt><tt class="py-base-class">TaskExecutionDecorator</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="CompositeExecutionDecorator-collapsed" style="display:none;" pad="+++" indent="++++"></div><div id="CompositeExecutionDecorator-expanded"><a name="L237"></a><tt class="py-lineno">237</tt>  <tt class="py-line">    <tt class="py-docstring">'''Decorates a L{TaskExecutioner} so that it bundles tasks into chunks</tt> </tt>
+<a name="L238"></a><tt class="py-lineno">238</tt>  <tt class="py-line"><tt class="py-docstring">    of a given size.</tt> </tt>
+<a name="L239"></a><tt class="py-lineno">239</tt>  <tt class="py-line"><tt class="py-docstring">    '''</tt> </tt>
+<a name="L240"></a><tt class="py-lineno">240</tt>  <tt class="py-line"> </tt>
+<a name="CompositeExecutionDecorator.__init__"></a><div id="CompositeExecutionDecorator.__init__-def"><a name="L241"></a><tt class="py-lineno">241</tt> <a class="py-toggle" href="#" id="CompositeExecutionDecorator.__init__-toggle" onclick="return toggle('CompositeExecutionDecorator.__init__');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="papyros.execute.CompositeExecutionDecorator-class.html#__init__">__init__</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">,</tt> <tt class="py-param">executioner</tt><tt class="py-op">,</tt> <tt class="py-param">chunksize</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="CompositeExecutionDecorator.__init__-collapsed" style="display:none;" pad="+++" indent="++++++++"></div><div id="CompositeExecutionDecorator.__init__-expanded"><a name="L242"></a><tt class="py-lineno">242</tt>  <tt class="py-line">        <tt class="py-name">super</tt><tt class="py-op">(</tt><tt id="link-41" class="py-name"><a title="papyros.execute.CompositeExecutionDecorator" class="py-name" href="#" onclick="return doclink('link-41', 'CompositeExecutionDecorator', 'link-4');">CompositeExecutionDecorator</a></tt><tt class="py-op">,</tt><tt class="py-name">self</tt><tt class="py-op">)</tt><tt class="py-op">.</tt><tt id="link-42" class="py-name"><a title="papyros.base.TaskDispatcher.__init__
+papyros.base.TaskQueue.__init__
+papyros.base.Worker.__init__
+papyros.distributed.PyroTaskDispatcher.__init__
+papyros.distributed.PyroTaskQueue.__init__
+papyros.distributed.PyroWorker.__init__
+papyros.dummy.DummyTaskDispatcher.__init__
+papyros.execute.CompositeExecutionDecorator.__init__
+papyros.execute.DefaultTaskExecutioner.__init__
+papyros.execute.ExecuteIterator.__init__
+papyros.execute.OrderedExecutionDecorator.__init__
+papyros.execute.TaskExecutionDecorator.__init__
+papyros.multithreaded.MultiThreadedTaskDispatcher.__init__
+papyros.multithreaded.MultiThreadedWorker.__init__
+papyros.task.Task.__init__" class="py-name" href="#" onclick="return doclink('link-42', '__init__', 'link-30');">__init__</a></tt><tt class="py-op">(</tt><tt class="py-name">executioner</tt><tt class="py-op">)</tt> </tt>
+<a name="L243"></a><tt class="py-lineno">243</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">__chunksize</tt> <tt class="py-op">=</tt> <tt class="py-name">chunksize</tt> </tt>
+<a name="L244"></a><tt class="py-lineno">244</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">__chunk</tt> <tt class="py-op">=</tt> <tt class="py-op">[</tt><tt class="py-op">]</tt> </tt>
+</div><a name="L245"></a><tt class="py-lineno">245</tt>  <tt class="py-line"> </tt>
+<a name="CompositeExecutionDecorator.adapt_tasks"></a><div id="CompositeExecutionDecorator.adapt_tasks-def"><a name="L246"></a><tt class="py-lineno">246</tt> <a class="py-toggle" href="#" id="CompositeExecutionDecorator.adapt_tasks-toggle" onclick="return toggle('CompositeExecutionDecorator.adapt_tasks');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="papyros.execute.CompositeExecutionDecorator-class.html#adapt_tasks">adapt_tasks</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">,</tt> <tt class="py-param">tasks</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="CompositeExecutionDecorator.adapt_tasks-collapsed" style="display:none;" pad="+++" indent="++++++++"></div><div id="CompositeExecutionDecorator.adapt_tasks-expanded"><a name="L247"></a><tt class="py-lineno">247</tt>  <tt class="py-line">        <tt class="py-docstring">'''Wrap tasks as L{CompositeTask}s and pass them to the</tt> </tt>
+<a name="L248"></a><tt class="py-lineno">248</tt>  <tt class="py-line"><tt class="py-docstring">        L{adapt_tasks &lt;TaskExecutioner.adapt_tasks&gt;} of the decorated component.</tt> </tt>
+<a name="L249"></a><tt class="py-lineno">249</tt>  <tt class="py-line"><tt class="py-docstring">        '''</tt> </tt>
+<a name="L250"></a><tt class="py-lineno">250</tt>  <tt class="py-line">        <tt class="py-name">composite_tasks</tt> <tt class="py-op">=</tt> <tt class="py-name">imap</tt><tt class="py-op">(</tt><tt id="link-43" class="py-name" targets="Class papyros.execute.CompositeTask=papyros.execute.CompositeTask-class.html"><a title="papyros.execute.CompositeTask" class="py-name" href="#" onclick="return doclink('link-43', 'CompositeTask', 'link-43');">CompositeTask</a></tt><tt class="py-op">,</tt> <tt id="link-44" class="py-name" targets="Function papyros.execute.iterchunks()=papyros.execute-module.html#iterchunks"><a title="papyros.execute.iterchunks" class="py-name" href="#" onclick="return doclink('link-44', 'iterchunks', 'link-44');">iterchunks</a></tt><tt class="py-op">(</tt><tt class="py-name">tasks</tt><tt class="py-op">,</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">__chunksize</tt><tt class="py-op">)</tt><tt class="py-op">)</tt> </tt>
+<a name="L251"></a><tt class="py-lineno">251</tt>  <tt class="py-line">        <tt class="py-keyword">return</tt> <tt class="py-name">super</tt><tt class="py-op">(</tt><tt id="link-45" class="py-name"><a title="papyros.execute.CompositeExecutionDecorator" class="py-name" href="#" onclick="return doclink('link-45', 'CompositeExecutionDecorator', 'link-4');">CompositeExecutionDecorator</a></tt><tt class="py-op">,</tt><tt class="py-name">self</tt><tt class="py-op">)</tt><tt class="py-op">.</tt><tt id="link-46" class="py-name"><a title="papyros.execute.CompositeExecutionDecorator.adapt_tasks
+papyros.execute.OrderedExecutionDecorator.adapt_tasks
+papyros.execute.TaskExecutionDecorator.adapt_tasks
+papyros.execute.TaskExecutioner.adapt_tasks" class="py-name" href="#" onclick="return doclink('link-46', 'adapt_tasks', 'link-7');">adapt_tasks</a></tt><tt class="py-op">(</tt><tt class="py-name">composite_tasks</tt><tt class="py-op">)</tt> </tt>
+</div><a name="L252"></a><tt class="py-lineno">252</tt>  <tt class="py-line"> </tt>
+<a name="CompositeExecutionDecorator.next"></a><div id="CompositeExecutionDecorator.next-def"><a name="L253"></a><tt class="py-lineno">253</tt> <a class="py-toggle" href="#" id="CompositeExecutionDecorator.next-toggle" onclick="return toggle('CompositeExecutionDecorator.next');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="papyros.execute.CompositeExecutionDecorator-class.html#next">next</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="CompositeExecutionDecorator.next-collapsed" style="display:none;" pad="+++" indent="++++++++"></div><div id="CompositeExecutionDecorator.next-expanded"><a name="L254"></a><tt class="py-lineno">254</tt>  <tt class="py-line">        <tt class="py-keyword">if</tt> <tt class="py-keyword">not</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">__chunk</tt><tt class="py-op">:</tt> </tt>
+<a name="L255"></a><tt class="py-lineno">255</tt>  <tt class="py-line">            <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">__chunk</tt><tt class="py-op">.</tt><tt class="py-name">extend</tt><tt class="py-op">(</tt><tt class="py-name">super</tt><tt class="py-op">(</tt><tt id="link-47" class="py-name"><a title="papyros.execute.CompositeExecutionDecorator" class="py-name" href="#" onclick="return doclink('link-47', 'CompositeExecutionDecorator', 'link-4');">CompositeExecutionDecorator</a></tt><tt class="py-op">,</tt><tt class="py-name">self</tt><tt class="py-op">)</tt><tt class="py-op">.</tt><tt id="link-48" class="py-name"><a title="papyros.execute.CompositeExecutionDecorator.next
+papyros.execute.DefaultTaskExecutioner.next
+papyros.execute.ExecuteIterator.next
+papyros.execute.OrderedExecutionDecorator.next
+papyros.execute.TaskExecutionDecorator.next
+papyros.execute.TaskExecutioner.next" class="py-name" href="#" onclick="return doclink('link-48', 'next', 'link-8');">next</a></tt><tt class="py-op">(</tt><tt class="py-op">)</tt><tt class="py-op">)</tt> </tt>
+<a name="L256"></a><tt class="py-lineno">256</tt>  <tt class="py-line">        <tt class="py-keyword">try</tt><tt class="py-op">:</tt> <tt id="link-49" class="py-name"><a title="papyros.task" class="py-name" href="#" onclick="return doclink('link-49', 'task', 'link-1');">task</a></tt> <tt class="py-op">=</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">__chunk</tt><tt class="py-op">.</tt><tt id="link-50" class="py-name"><a title="papyros.base.TaskQueue.pop" class="py-name" href="#" onclick="return doclink('link-50', 'pop', 'link-12');">pop</a></tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+<a name="L257"></a><tt class="py-lineno">257</tt>  <tt class="py-line">        <tt class="py-keyword">except</tt> <tt class="py-name">IndexError</tt><tt class="py-op">:</tt> </tt>
+<a name="L258"></a><tt class="py-lineno">258</tt>  <tt class="py-line">            <tt class="py-keyword">raise</tt> <tt class="py-name">StopIteration</tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+<a name="L259"></a><tt class="py-lineno">259</tt>  <tt class="py-line">        <tt class="py-keyword">return</tt> <tt id="link-51" class="py-name"><a title="papyros.task" class="py-name" href="#" onclick="return doclink('link-51', 'task', 'link-1');">task</a></tt><tt class="py-op">.</tt><tt id="link-52" class="py-name"><a title="papyros.task.Task.result" class="py-name" href="#" onclick="return doclink('link-52', 'result', 'link-36');">result</a></tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+</div></div><a name="L260"></a><tt class="py-lineno">260</tt>  <tt class="py-line"> </tt>
+<a name="L261"></a><tt class="py-lineno">261</tt>  <tt class="py-line"> </tt>
+<a name="iterchunks"></a><div id="iterchunks-def"><a name="L262"></a><tt class="py-lineno">262</tt> <a class="py-toggle" href="#" id="iterchunks-toggle" onclick="return toggle('iterchunks');">-</a><tt class="py-line"><tt class="py-keyword">def</tt> <a class="py-def-name" href="papyros.execute-module.html#iterchunks">iterchunks</a><tt class="py-op">(</tt><tt class="py-param">iterable</tt><tt class="py-op">,</tt> <tt class="py-param">chunksize</tt><tt class="py-op">,</tt> <tt class="py-param">chunktype</tt><tt class="py-op">=</tt><tt class="py-name">list</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="iterchunks-collapsed" style="display:none;" pad="+++" indent="++++"></div><div id="iterchunks-expanded"><a name="L263"></a><tt class="py-lineno">263</tt>  <tt class="py-line">    <tt class="py-docstring">'''Break C{iterable} into chunks of C{chunksize}.</tt> </tt>
+<a name="L264"></a><tt class="py-lineno">264</tt>  <tt class="py-line"><tt class="py-docstring"></tt> </tt>
+<a name="L265"></a><tt class="py-lineno">265</tt>  <tt class="py-line"><tt class="py-docstring">    @type chunksize: int</tt> </tt>
+<a name="L266"></a><tt class="py-lineno">266</tt>  <tt class="py-line"><tt class="py-docstring">    @param chunksize: The size of each chunk. The last chunk (in case of finite</tt> </tt>
+<a name="L267"></a><tt class="py-lineno">267</tt>  <tt class="py-line"><tt class="py-docstring">        iterables) may actually be smaller.</tt> </tt>
+<a name="L268"></a><tt class="py-lineno">268</tt>  <tt class="py-line"><tt class="py-docstring">    @param chunktype: A container type for the chunks. It must be a callable</tt> </tt>
+<a name="L269"></a><tt class="py-lineno">269</tt>  <tt class="py-line"><tt class="py-docstring">        f(iterable) that returns a container instance. The container must satisfy</tt> </tt>
+<a name="L270"></a><tt class="py-lineno">270</tt>  <tt class="py-line"><tt class="py-docstring">        C{bool(container) == False} if and only if it is empty.</tt> </tt>
+<a name="L271"></a><tt class="py-lineno">271</tt>  <tt class="py-line"><tt class="py-docstring">    '''</tt> </tt>
+<a name="L272"></a><tt class="py-lineno">272</tt>  <tt class="py-line">    <tt class="py-keyword">return</tt> <tt class="py-name">takewhile</tt><tt class="py-op">(</tt><tt class="py-name">bool</tt><tt class="py-op">,</tt> </tt>
+<a name="L273"></a><tt class="py-lineno">273</tt>  <tt class="py-line">                     <tt class="py-name">imap</tt><tt class="py-op">(</tt><tt class="py-name">chunktype</tt><tt class="py-op">,</tt> </tt>
+<a name="L274"></a><tt class="py-lineno">274</tt>  <tt class="py-line">                          <tt class="py-name">starmap</tt><tt class="py-op">(</tt><tt class="py-name">islice</tt><tt class="py-op">,</tt> </tt>
+<a name="L275"></a><tt class="py-lineno">275</tt>  <tt class="py-line">                                  <tt class="py-name">repeat</tt><tt class="py-op">(</tt><tt class="py-op">(</tt><tt class="py-name">iter</tt><tt class="py-op">(</tt><tt class="py-name">iterable</tt><tt class="py-op">)</tt><tt class="py-op">,</tt><tt class="py-name">chunksize</tt><tt class="py-op">)</tt><tt class="py-op">)</tt><tt class="py-op">)</tt><tt class="py-op">)</tt><tt class="py-op">)</tt> </tt>
+</div><a name="L276"></a><tt class="py-lineno">276</tt>  <tt class="py-line"> </tt><script type="text/javascript">
+<!--
+expandto(location.href);
+// -->
+</script>
+</pre>
+<br />
+<!-- ==================== NAVIGATION BAR ==================== -->
+<table class="navbar" border="0" width="100%" cellpadding="0"
+       bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="middle">
+
+  <!-- Tree link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="module-tree.html">Trees</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Index link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="identifier-index.html">Indices</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Help link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="help.html">Help</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Project homepage -->
+      <th class="navbar" align="right" width="100%">
+        <table border="0" cellpadding="0" cellspacing="0">
+          <tr><th class="navbar" align="center"
+            >papyros documentation</th>
+          </tr></table></th>
+  </tr>
+</table>
+<table border="0" cellpadding="0" cellspacing="0" width="100%%">
+  <tr>
+    <td align="left" class="footer">
+    Generated by Epydoc 3.0beta1 on Tue Aug 12 05:39:45 2008
+    </td>
+    <td align="right" class="footer">
+      <a href="http://epydoc.sourceforge.net">http://epydoc.sourceforge.net</a>
+    </td>
+  </tr>
+</table>
+
+<script type="text/javascript">
+  <!--
+  // Private objects are initially displayed (because if
+  // javascript is turned off then we want them to be
+  // visible); but by default, we want to hide them.  So hide
+  // them unless we have a cookie that says to show them.
+  checkCookie()
+  // -->
+</script>
+  
+</body>
+</html>
